@@ -130,7 +130,7 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
                 管理
               </div>
             )}
-            <ul role="list" className={classNames("space-y-1", !collapsed && "mt-2")}>
+            <ul role="list" className={classNames("space-y-1", !collapsed ? "mt-2" : "")}>
               {secondaryNavigation.map((item) => (
                 <motion.li 
                   key={item.name}
