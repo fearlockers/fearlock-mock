@@ -52,7 +52,7 @@ export default function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
 
   return (
     <div className={classNames(
-      'flex grow flex-col gap-y-3 overflow-y-auto bg-indigo-900 dark:bg-gray-900 text-white transition-all duration-300',
+      'flex grow flex-col gap-y-3 overflow-y-auto bg-indigo-900 dark:bg-gray-800 text-white transition-all duration-300 border-r border-indigo-700 dark:border-gray-600',
       collapsed ? 'px-2 py-4' : 'px-4 py-4'
     )}>
       <div className="flex items-center justify-between">
