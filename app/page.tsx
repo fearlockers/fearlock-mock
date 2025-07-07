@@ -1,20 +1,20 @@
 'use client'
 
-import { useState } from 'react'
 import Sidebar from '@/components/Sidebar'
 import Header from '@/components/Header'
 import Dashboard from '@/components/Dashboard'
+import { useSidebar } from '@/contexts/SidebarContext'
 
 export default function Home() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const { collapsed } = useSidebar()
 
   return (
     <div className="h-screen flex">
       {/* サイドバー */}
       <div className={`hidden lg:flex lg:flex-col transition-all duration-300 ${
-        sidebarCollapsed ? 'lg:w-16' : 'lg:w-64'
+        collapsed ? 'lg:w-16' : 'lg:w-64'
       }`}>
-        <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
+        <Sidebar />
       </div>
 
       {/* メインコンテンツ */}

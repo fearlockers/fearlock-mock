@@ -1,6 +1,7 @@
 'use client'
 
 import { ThemeProvider } from '@/contexts/ThemeContext'
+import { SidebarProvider } from '@/contexts/SidebarContext'
 
 export default function Providers({
   children,
@@ -9,7 +10,9 @@ export default function Providers({
 }) {
   return (
     <ThemeProvider>
-      {children}
+      <SidebarProvider>
+        {children}
+      </SidebarProvider>
     </ThemeProvider>
   )
 } 

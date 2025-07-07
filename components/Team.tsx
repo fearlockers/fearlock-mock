@@ -166,9 +166,9 @@ export default function Team() {
         </div>
         <button
           onClick={() => setShowInviteModal(true)}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
         >
-          <UserPlusIcon className="w-4 h-4 mr-2" />
+          <UserPlusIcon className="w-3 h-3 mr-1.5" />
           メンバーを招待
         </button>
       </div>

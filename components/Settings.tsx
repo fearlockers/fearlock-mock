@@ -13,12 +13,17 @@ import {
   SunIcon,
   MoonIcon,
   ComputerDesktopIcon,
+  BuildingOfficeIcon,
+  PlusIcon,
+  TrashIcon,
+  PencilIcon,
 } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 import { useTheme } from '@/contexts/ThemeContext'
 
 const settingsTabs = [
   { id: 'general', name: '一般設定', icon: Cog6ToothIcon },
+  { id: 'organization', name: '組織設定', icon: BuildingOfficeIcon },
   { id: 'security', name: 'セキュリティ', icon: ShieldCheckIcon },
   { id: 'notifications', name: '通知設定', icon: BellIcon },
   { id: 'profile', name: 'プロフィール', icon: UserIcon },
@@ -33,6 +38,50 @@ export default function Settings() {
   const [activeTab, setActiveTab] = useState('general')
   const [showApiKey, setShowApiKey] = useState(false)
   const { theme, setTheme } = useTheme()
+  
+  // Organization settings state
+  const [organizations, setOrganizations] = useState([
+    { id: 1, name: '株式会社サンプル', isDefault: true },
+    { id: 2, name: 'テスト企業A', isDefault: false },
+    { id: 3, name: 'テスト企業B', isDefault: false },
+  ])
+  const [editingOrg, setEditingOrg] = useState(null)
+  const [newOrgName, setNewOrgName] = useState('')
+  const [showAddForm, setShowAddForm] = useState(false)
+
+  // Organization management functions
+  const handleAddOrganization = () => {
+    if (newOrgName.trim()) {
+      const newOrg = {
+        id: Math.max(...organizations.map(org => org.id)) + 1,
+        name: newOrgName.trim(),
+        isDefault: false
+      }
+      setOrganizations([...organizations, newOrg])
+      setNewOrgName('')
+      setShowAddForm(false)
+    }
+  }
+
+  const handleEditOrganization = (orgId, newName) => {
+    setOrganizations(organizations.map(org => 
+      org.id === orgId ? { ...org, name: newName } : org
+    ))
+    setEditingOrg(null)
+  }
+
+  const handleDeleteOrganization = (orgId) => {
+    if (organizations.length > 1) {
+      setOrganizations(organizations.filter(org => org.id !== orgId))
+    }
+  }
+
+  const handleSetDefault = (orgId) => {
+    setOrganizations(organizations.map(org => ({
+      ...org,
+      isDefault: org.id === orgId
+    })))
+  }
 
   return (
           <div className="space-y-6">
@@ -146,6 +195,127 @@ export default function Settings() {
                       <input type="checkbox" className="h-4 w-4 text-blue-600 rounded" defaultChecked />
                       <span className="ml-2 text-sm text-gray-700">ダッシュボードの自動更新を有効にする</span>
                     </label>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'organization' && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">組織設定</h3>
+                    <button
+                      onClick={() => setShowAddForm(true)}
+                      className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    >
+                      <PlusIcon className="w-3 h-3 mr-1.5" />
+                      組織を追加
+                    </button>
+                  </div>
+
+                  {/* Add Organization Form */}
+                  {showAddForm && (
+                    <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                      <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">新しい組織を追加</h4>
+                      <div className="flex gap-3">
+                        <input
+                          type="text"
+                          value={newOrgName}
+                          onChange={(e) => setNewOrgName(e.target.value)}
+                          placeholder="組織名を入力"
+                          className="flex-1 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+                        />
+                        <button
+                          onClick={handleAddOrganization}
+                          className="px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          追加
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowAddForm(false)
+                            setNewOrgName('')
+                          }}
+                          className="px-3 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-400 dark:hover:bg-gray-500"
+                        >
+                          キャンセル
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Organizations List */}
+                  <div className="space-y-3">
+                    {organizations.map((org) => (
+                      <div key={org.id} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <BuildingOfficeIcon className="w-5 h-5 text-gray-400" />
+                          {editingOrg === org.id ? (
+                            <input
+                              type="text"
+                              defaultValue={org.name}
+                              onBlur={(e) => handleEditOrganization(org.id, e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                  handleEditOrganization(org.id, e.target.value)
+                                }
+                              }}
+                              className="border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+                              autoFocus
+                            />
+                          ) : (
+                            <div className="flex items-center space-x-2">
+                              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{org.name}</span>
+                              {org.isDefault && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                                  デフォルト
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          {!org.isDefault && (
+                            <button
+                              onClick={() => handleSetDefault(org.id)}
+                              className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
+                            >
+                              デフォルトに設定
+                            </button>
+                          )}
+                          <button
+                            onClick={() => setEditingOrg(org.id)}
+                            className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                          >
+                            <PencilIcon className="w-4 h-4" />
+                          </button>
+                          {organizations.length > 1 && (
+                            <button
+                              onClick={() => handleDeleteOrganization(org.id)}
+                              className="p-1 text-red-400 hover:text-red-600"
+                            >
+                              <TrashIcon className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <BuildingOfficeIcon className="h-5 w-5 text-blue-400" />
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200">組織について</h3>
+                        <div className="mt-2 text-sm text-blue-700 dark:text-blue-300">
+                          <p>
+                            組織は、チームや部門を管理するための単位です。デフォルト組織はサイドバーで自動選択されます。
+                            組織を切り替えることで、異なるプロジェクトやデータセットにアクセスできます。
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

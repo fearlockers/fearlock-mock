@@ -2,10 +2,10 @@
 
 import Sidebar from '@/components/Sidebar'
 import Header from '@/components/Header'
-import Reports from '@/components/Reports'
+import Integrations from '@/components/Integrations'
 import { useSidebar } from '@/contexts/SidebarContext'
 
-export default function ReportsPage() {
+export default function IntegrationsPage() {
   const { collapsed } = useSidebar()
 
   return (
@@ -20,7 +20,7 @@ export default function ReportsPage() {
         <Header />
         <main className="flex-1 overflow-auto">
           <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6 py-4">
-            <Reports />
+            <Integrations />
           </div>
         </main>
       </div>
