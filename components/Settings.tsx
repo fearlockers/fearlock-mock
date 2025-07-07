@@ -63,20 +63,20 @@ export default function Settings() {
     }
   }
 
-  const handleEditOrganization = (orgId, newName) => {
+  const handleEditOrganization = (orgId: string, newName: string) => {
     setOrganizations(organizations.map(org => 
       org.id === orgId ? { ...org, name: newName } : org
     ))
     setEditingOrg(null)
   }
 
-  const handleDeleteOrganization = (orgId) => {
+  const handleDeleteOrganization = (orgId: string) => {
     if (organizations.length > 1) {
       setOrganizations(organizations.filter(org => org.id !== orgId))
     }
   }
 
-  const handleSetDefault = (orgId) => {
+  const handleSetDefault = (orgId: string) => {
     setOrganizations(organizations.map(org => ({
       ...org,
       isDefault: org.id === orgId
