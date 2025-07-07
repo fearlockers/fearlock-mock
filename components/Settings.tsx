@@ -253,10 +253,10 @@ export default function Settings() {
                             <input
                               type="text"
                               defaultValue={org.name}
-                              onBlur={(e) => handleEditOrganization(org.id, e.target.value)}
+                              onBlur={(e) => handleEditOrganization(org.id, (e.target as HTMLInputElement).value)}
                               onKeyPress={(e) => {
                                 if (e.key === 'Enter') {
-                                  handleEditOrganization(org.id, e.target.value)
+                                  handleEditOrganization(org.id, (e.target as HTMLInputElement).value)
                                 }
                               }}
                               className="border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
