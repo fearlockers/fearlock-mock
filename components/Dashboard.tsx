@@ -415,7 +415,7 @@ export default function Dashboard() {
                       fontSize: '14px'
                     }}
                     formatter={(value, name) => [
-                      `${value} 件 (${((value / severityData.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(1)}%)`,
+                      `${value} 件 (${((Number(value) / severityData.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(1)}%)`,
                       name
                     ]}
                   />
