@@ -45,7 +45,7 @@ export default function Settings() {
     { id: 2, name: 'テスト企業A', isDefault: false },
     { id: 3, name: 'テスト企業B', isDefault: false },
   ])
-  const [editingOrg, setEditingOrg] = useState(null)
+  const [editingOrg, setEditingOrg] = useState<number | null>(null)
   const [newOrgName, setNewOrgName] = useState('')
   const [showAddForm, setShowAddForm] = useState(false)
 
