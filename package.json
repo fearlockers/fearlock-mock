@@ -9,7 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "export": "next build && next export"
+    "export": "next build && next export",
+    "wrangler:dev": "wrangler dev",
+    "wrangler:publish": "npm run build && wrangler deploy",
+    "cf:deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "next": "^14.0.4",
@@ -33,6 +36,7 @@
     "eslint-config-next": "^14.0.4",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.6",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "wrangler": "^3.0.0"
   }
 } 

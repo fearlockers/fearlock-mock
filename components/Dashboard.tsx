@@ -208,8 +208,8 @@ export default function Dashboard() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                  脆弱性検出トレンド
-                </h3>
+              脆弱性検出トレンド
+            </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   過去12ヶ月間の脆弱性検出状況
                 </p>
@@ -338,8 +338,8 @@ export default function Dashboard() {
           <div className="p-6">
             <div className="mb-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                脆弱性重要度分布
-              </h3>
+              脆弱性重要度分布
+            </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 過去12ヶ月間の総計
               </p>

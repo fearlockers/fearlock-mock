@@ -40,7 +40,6 @@ const navigation = [
 const secondaryNavigation = [
   { name: 'プロジェクト', icon: DocumentTextIcon, href: '/projects' },
   { name: 'チーム', icon: UserGroupIcon, href: '/team' },
-  { name: '連携管理', icon: LinkIcon, href: '/integrations' },
   { name: '設定', icon: Cog6ToothIcon, href: '/settings' },
 ]
 

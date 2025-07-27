@@ -11,7 +11,7 @@ export default function Providers({
   return (
     <ThemeProvider>
       <SidebarProvider>
-        {children}
+      {children}
       </SidebarProvider>
     </ThemeProvider>
   )
