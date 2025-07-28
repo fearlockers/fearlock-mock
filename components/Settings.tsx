@@ -32,6 +32,14 @@ import {
   CodeBracketIcon,
   CheckCircleIcon,
   XMarkIcon,
+  BookOpenIcon,
+  ExclamationTriangleIcon,
+  QuestionMarkCircleIcon,
+  LightBulbIcon,
+  AcademicCapIcon,
+  CheckBadgeIcon,
+  BugAntIcon,
+  PlayIcon,
 } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -54,6 +62,7 @@ function classNames(...classes: string[]) {
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('general')
   const [showApiKey, setShowApiKey] = useState(false)
+  const [helpSubTab, setHelpSubTab] = useState('getting-started')
   const { theme, setTheme } = useTheme()
   
   // Organization settings state - single organization
@@ -1829,9 +1838,9 @@ export default function Settings() {
                 </div>
               )}
 
-                             {activeTab === 'security' && (
-                 <div className="space-y-6">
-                   <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">セキュリティ設定</h3>
+              {activeTab === 'security' && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">セキュリティ設定</h3>
                                        <div className="space-y-4">
                        <div className="flex items-center justify-between">
                          <div>
@@ -1855,494 +1864,1095 @@ export default function Settings() {
                 </div>
               )}
 
-                             {activeTab === 'notifications' && (
-                 <div className="space-y-6">
-                   <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">通知設定</h3>
-                   <div className="space-y-4">
-                     <div className="flex items-center justify-between">
-                       <div>
-                         <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">メールアラート</h4>
-                         <p className="text-sm text-gray-500 dark:text-gray-400">重要なアラートをメールで受信</p>
-                       </div>
-                      <button className="bg-blue-600 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors">
-                        <span className="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200" />
-                      </button>
-                    </div>
-                                         <div className="flex items-center justify-between">
-                       <div>
-                         <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">プッシュ通知</h4>
-                         <p className="text-sm text-gray-500 dark:text-gray-400">ブラウザでリアルタイム通知</p>
-                       </div>
-                      <button className="bg-blue-600 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors">
-                        <span className="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200" />
-                      </button>
-                    </div>
+              {activeTab === 'notifications' && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">通知設定</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">メールアラート</h4>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">重要なアラートをメールで受信</p>
+                      </div>
+                     <button className="bg-blue-600 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors">
+                       <span className="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200" />
+                     </button>
+                   </div>
+                                       <div className="flex items-center justify-between">
+                     <div>
+                       <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">プッシュ通知</h4>
+                       <p className="text-sm text-gray-500 dark:text-gray-400">ブラウザでリアルタイム通知</p>
+                     </div>
+                    <button className="bg-blue-600 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors">
+                      <span className="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200" />
+                    </button>
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-                             {activeTab === 'profile' && (
-                 <div className="space-y-6">
-                   <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">プロフィール設定</h3>
-                   <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                     <div>
-                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">氏名</label>
-                       <input type="text" defaultValue="田中太郎" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
-                    </div>
-                                         <div>
-                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">メールアドレス</label>
-                       <input type="email" defaultValue="tanaka@example.com" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
-                     </div>
-                     <div>
-                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">部署</label>
-                       <input type="text" defaultValue="セキュリティ部" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
-                     </div>
-                     <div>
-                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">役職</label>
-                       <input type="text" defaultValue="セキュリティアナリスト" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
-                    </div>
+              {activeTab === 'profile' && (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">プロフィール設定</h3>
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">氏名</label>
+                      <input type="text" defaultValue="田中太郎" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+                   </div>
+                                       <div>
+                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">メールアドレス</label>
+                     <input type="email" defaultValue="tanaka@example.com" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">部署</label>
+                     <input type="text" defaultValue="セキュリティ部" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">役職</label>
+                     <input type="text" defaultValue="セキュリティアナリスト" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-                {activeTab === 'api' && (
-                  <div className="space-y-8">
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">API設定</h3>
-                    
-                    {/* APIキー管理 */}
-                    <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
-                      <div className="px-4 py-5 sm:p-6">
-                        <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
-                          <KeyIcon className="w-5 h-5 mr-2 text-blue-500" />
-                          APIキー管理
-                        </h4>
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">プライマリAPIキー</label>
-                            <div className="flex">
-                              <input 
-                                type={showApiKey ? 'text' : 'password'} 
-                                value="sk-1234567890abcdef..." 
-                                readOnly 
-                                className="flex-1 border border-gray-300 dark:border-gray-600 rounded-l-md px-3 py-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
-                              />
-                              <button 
-                                onClick={() => setShowApiKey(!showApiKey)} 
-                                className="px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                              >
-                                {showApiKey ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
-                              </button>
-                              <button className="px-4 py-2 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-md bg-blue-600 text-white hover:bg-blue-700">
-                                再生成
-                              </button>
-                            </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                              作成日: 2024年1月15日 | 最終使用: 2時間前 | 使用回数: 1,247回
-                            </p>
-                          </div>
-                          
-                          {/* 追加のAPIキー */}
-                          <div>
-                            <div className="flex items-center justify-between mb-3">
-                              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">追加のAPIキー</label>
-                              <button className="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                                新しいキーを作成
-                              </button>
-                            </div>
-                            <div className="space-y-2">
-                              {[
-                                { name: 'テスト用キー', key: 'sk-test789...', created: '2024/01/20', usage: '34回', status: 'active' },
-                                { name: 'CI/CD用キー', key: 'sk-ci456...', created: '2024/01/18', usage: '156回', status: 'active' },
-                                { name: '開発用キー', key: 'sk-dev123...', created: '2024/01/10', usage: '0回', status: 'disabled' },
-                              ].map((apiKey, index) => (
-                                <div key={index} className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-600 rounded-lg">
-                                  <div>
-                                    <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100">{apiKey.name}</h5>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                                      {apiKey.key} • 作成日: {apiKey.created} • 使用回数: {apiKey.usage}
-                                    </p>
-                                  </div>
-                                  <div className="flex items-center space-x-2">
-                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                                      apiKey.status === 'active' 
-                                        ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-                                        : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
-                                    }`}>
-                                      {apiKey.status === 'active' ? 'アクティブ' : '無効'}
-                                    </span>
-                                    <button className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                                      編集
-                                    </button>
-                                    <button className="text-sm text-red-600 dark:text-red-400 hover:underline">
-                                      削除
-                                    </button>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* API使用統計 */}
-                    <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
-                      <div className="px-4 py-5 sm:p-6">
-                        <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
-                                                     <UsersIcon className="w-5 h-5 mr-2 text-green-500" />
-                          API使用統計
-                        </h4>
-                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                          <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden rounded-lg p-4">
-                            <div className="flex items-center">
-                              <div className="flex-shrink-0">
-                                <KeyIcon className="h-5 w-5 text-blue-500" />
-                              </div>
-                              <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">今月のAPI呼び出し</p>
-                                <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">12,847</p>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden rounded-lg p-4">
-                            <div className="flex items-center">
-                              <div className="flex-shrink-0">
-                                <ClockIcon className="h-5 w-5 text-green-500" />
-                              </div>
-                              <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">平均レスポンス時間</p>
-                                <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">124ms</p>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden rounded-lg p-4">
-                            <div className="flex items-center">
-                              <div className="flex-shrink-0">
-                                <CheckCircleIcon className="h-5 w-5 text-purple-500" />
-                              </div>
-                              <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">成功率</p>
-                                <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">99.8%</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* レート制限設定 */}
-                    <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
-                      <div className="px-4 py-5 sm:p-6">
-                        <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
-                          <ClockIcon className="w-5 h-5 mr-2 text-orange-500" />
-                          レート制限設定
-                        </h4>
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">1分あたりのリクエスト数</label>
-                              <select className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
-                                <option>100リクエスト/分</option>
-                                <option>500リクエスト/分</option>
-                                <option>1000リクエスト/分</option>
-                                <option>無制限</option>
-                              </select>
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">1日あたりのリクエスト数</label>
-                              <select className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
-                                <option>10,000リクエスト/日</option>
-                                <option>50,000リクエスト/日</option>
-                                <option>100,000リクエスト/日</option>
-                                <option>無制限</option>
-                              </select>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">レート制限通知</label>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">制限に近づいた時にアラートを送信</p>
-                            </div>
-                            <button
-                              type="button"
-                              className="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-blue-600 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                              role="switch"
-                              aria-checked="true"
+              {activeTab === 'api' && (
+                <div className="space-y-8">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">API設定</h3>
+                  
+                  {/* APIキー管理 */}
+                  <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
+                    <div className="px-4 py-5 sm:p-6">
+                      <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                        <KeyIcon className="w-5 h-5 mr-2 text-blue-500" />
+                        APIキー管理
+                      </h4>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">プライマリAPIキー</label>
+                          <div className="flex">
+                            <input 
+                              type={showApiKey ? 'text' : 'password'} 
+                              value="sk-1234567890abcdef..." 
+                              readOnly 
+                              className="flex-1 border border-gray-300 dark:border-gray-600 rounded-l-md px-3 py-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
+                            />
+                            <button 
+                              onClick={() => setShowApiKey(!showApiKey)} 
+                              className="px-3 py-2 border border-l-0 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                             >
-                              <span className="translate-x-5 inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+                              {showApiKey ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
+                            </button>
+                            <button className="px-4 py-2 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-md bg-blue-600 text-white hover:bg-blue-700">
+                              再生成
                             </button>
                           </div>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            作成日: 2024年1月15日 | 最終使用: 2時間前 | 使用回数: 1,247回
+                          </p>
                         </div>
-                      </div>
-                    </div>
-
-                    {/* Webhook設定 */}
-                    <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
-                      <div className="px-4 py-5 sm:p-6">
-                        <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
-                          <LinkIcon className="w-5 h-5 mr-2 text-purple-500" />
-                          Webhook設定
-                        </h4>
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Webhook URL</label>
-                            <input 
-                              type="url" 
-                              placeholder="https://webhook.example.com/alerts" 
-                              className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500" 
-                            />
+                        
+                        {/* 追加のAPIキー */}
+                        <div>
+                          <div className="flex items-center justify-between mb-3">
+                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">追加のAPIキー</label>
+                            <button className="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                              新しいキーを作成
+                            </button>
                           </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">イベント選択</label>
-                            <div className="space-y-2">
-                              {[
-                                { id: 'security_alert', name: 'セキュリティアラート', enabled: true },
-                                { id: 'vulnerability_found', name: '脆弱性発見', enabled: true },
-                                { id: 'scan_complete', name: 'スキャン完了', enabled: false },
-                                { id: 'user_login', name: 'ユーザーログイン', enabled: false },
-                                { id: 'api_error', name: 'APIエラー', enabled: true },
-                              ].map((event) => (
-                                <div key={event.id} className="flex items-center justify-between">
-                                  <span className="text-sm text-gray-900 dark:text-gray-100">{event.name}</span>
-                                  <button
-                                    type="button"
-                                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                                      event.enabled
-                                        ? 'bg-blue-600 focus:ring-blue-500'
-                                        : 'bg-gray-200 dark:bg-gray-600 focus:ring-gray-500'
-                                    }`}
-                                    role="switch"
-                                    aria-checked={event.enabled}
-                                  >
-                                    <span 
-                                      className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                                        event.enabled ? 'translate-x-5' : 'translate-x-0'
-                                      }`}
-                                    />
+                          <div className="space-y-2">
+                            {[
+                              { name: 'テスト用キー', key: 'sk-test789...', created: '2024/01/20', usage: '34回', status: 'active' },
+                              { name: 'CI/CD用キー', key: 'sk-ci456...', created: '2024/01/18', usage: '156回', status: 'active' },
+                              { name: '開発用キー', key: 'sk-dev123...', created: '2024/01/10', usage: '0回', status: 'disabled' },
+                            ].map((apiKey, index) => (
+                              <div key={index} className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-600 rounded-lg">
+                                <div>
+                                  <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100">{apiKey.name}</h5>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    {apiKey.key} • 作成日: {apiKey.created} • 使用回数: {apiKey.usage}
+                                  </p>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                                    apiKey.status === 'active' 
+                                      ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                                      : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+                                  }`}>
+                                    {apiKey.status === 'active' ? 'アクティブ' : '無効'}
+                                  </span>
+                                  <button className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                                    編集
+                                  </button>
+                                  <button className="text-sm text-red-600 dark:text-red-400 hover:underline">
+                                    削除
                                   </button>
                                 </div>
-                              ))}
-                            </div>
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">署名シークレット</label>
-                            <div className="flex">
-                              <input 
-                                type="password" 
-                                value="wh_secret_abc123..." 
-                                readOnly
-                                className="flex-1 border border-gray-300 dark:border-gray-600 rounded-l-md px-3 py-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
-                              />
-                              <button className="px-4 py-2 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-md bg-blue-600 text-white hover:bg-blue-700">
-                                再生成
-                              </button>
-                            </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                              Webhookペイロードの署名検証に使用されます
-                            </p>
-                          </div>
-                          
-                          <div className="flex items-center space-x-4">
-                            <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700">
-                              テスト送信
-                            </button>
-                            <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
-                              配信履歴を表示
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* API ドキュメント */}
-                    <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
-                      <div className="px-4 py-5 sm:p-6">
-                        <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
-                          <CodeBracketIcon className="w-5 h-5 mr-2 text-indigo-500" />
-                          API ドキュメント・リソース
-                        </h4>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                          <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
-                            <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">API リファレンス</h5>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">すべてのエンドポイントと使用方法</p>
-                            <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                              ドキュメントを開く →
-                            </a>
-                          </div>
-                          
-                          <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
-                            <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">SDKダウンロード</h5>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Python、Node.js、Go SDK</p>
-                            <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                              SDKを取得 →
-                            </a>
-                          </div>
-                          
-                          <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
-                            <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">サンプルコード</h5>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">実装例とベストプラクティス</p>
-                            <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                              例を見る →
-                            </a>
-                          </div>
-                          
-                          <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
-                            <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Postmanコレクション</h5>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">API テスト用コレクション</p>
-                            <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                              インポート →
-                            </a>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                )}
+
+                  {/* API使用統計 */}
+                  <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
+                    <div className="px-4 py-5 sm:p-6">
+                      <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                                                     <UsersIcon className="w-5 h-5 mr-2 text-green-500" />
+                        API使用統計
+                      </h4>
+                      <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                        <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden rounded-lg p-4">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0">
+                              <KeyIcon className="h-5 w-5 text-blue-500" />
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">今月のAPI呼び出し</p>
+                              <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">12,847</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden rounded-lg p-4">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0">
+                              <ClockIcon className="h-5 w-5 text-green-500" />
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">平均レスポンス時間</p>
+                              <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">124ms</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden rounded-lg p-4">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0">
+                              <CheckCircleIcon className="h-5 w-5 text-purple-500" />
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">成功率</p>
+                              <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">99.8%</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* レート制限設定 */}
+                  <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
+                    <div className="px-4 py-5 sm:p-6">
+                      <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                        <ClockIcon className="w-5 h-5 mr-2 text-orange-500" />
+                        レート制限設定
+                      </h4>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">1分あたりのリクエスト数</label>
+                            <select className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                              <option>100リクエスト/分</option>
+                              <option>500リクエスト/分</option>
+                              <option>1000リクエスト/分</option>
+                              <option>無制限</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">1日あたりのリクエスト数</label>
+                            <select className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                              <option>10,000リクエスト/日</option>
+                              <option>50,000リクエスト/日</option>
+                              <option>100,000リクエスト/日</option>
+                              <option>無制限</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">レート制限通知</label>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">制限に近づいた時にアラートを送信</p>
+                          </div>
+                          <button
+                            type="button"
+                            className="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-blue-600 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            role="switch"
+                            aria-checked="true"
+                          >
+                            <span className="translate-x-5 inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Webhook設定 */}
+                  <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
+                    <div className="px-4 py-5 sm:p-6">
+                      <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                        <LinkIcon className="w-5 h-5 mr-2 text-purple-500" />
+                        Webhook設定
+                      </h4>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Webhook URL</label>
+                          <input 
+                            type="url" 
+                            placeholder="https://webhook.example.com/alerts" 
+                            className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500" 
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">イベント選択</label>
+                          <div className="space-y-2">
+                            {[
+                              { id: 'security_alert', name: 'セキュリティアラート', enabled: true },
+                              { id: 'vulnerability_found', name: '脆弱性発見', enabled: true },
+                              { id: 'scan_complete', name: 'スキャン完了', enabled: false },
+                              { id: 'user_login', name: 'ユーザーログイン', enabled: false },
+                              { id: 'api_error', name: 'APIエラー', enabled: true },
+                            ].map((event) => (
+                              <div key={event.id} className="flex items-center justify-between">
+                                <span className="text-sm text-gray-900 dark:text-gray-100">{event.name}</span>
+                                <button
+                                  type="button"
+                                  className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                                    event.enabled
+                                      ? 'bg-blue-600 focus:ring-blue-500'
+                                      : 'bg-gray-200 dark:bg-gray-600 focus:ring-gray-500'
+                                  }`}
+                                  role="switch"
+                                  aria-checked={event.enabled}
+                                >
+                                  <span 
+                                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                                      event.enabled ? 'translate-x-5' : 'translate-x-0'
+                                    }`}
+                                  />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">署名シークレット</label>
+                          <div className="flex">
+                            <input 
+                              type="password" 
+                              value="wh_secret_abc123..." 
+                              readOnly
+                              className="flex-1 border border-gray-300 dark:border-gray-600 rounded-l-md px-3 py-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
+                            />
+                            <button className="px-4 py-2 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r-md bg-blue-600 text-white hover:bg-blue-700">
+                              再生成
+                            </button>
+                          </div>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            Webhookペイロードの署名検証に使用されます
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center space-x-4">
+                          <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700">
+                            テスト送信
+                          </button>
+                          <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                            配信履歴を表示
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* API ドキュメント */}
+                  <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
+                    <div className="px-4 py-5 sm:p-6">
+                      <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                        <CodeBracketIcon className="w-5 h-5 mr-2 text-indigo-500" />
+                        API ドキュメント・リソース
+                      </h4>
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
+                          <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">API リファレンス</h5>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">すべてのエンドポイントと使用方法</p>
+                          <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                            ドキュメントを開く →
+                          </a>
+                        </div>
+                        
+                        <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
+                          <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">SDKダウンロード</h5>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Python、Node.js、Go SDK</p>
+                          <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                            SDKを取得 →
+                          </a>
+                        </div>
+                        
+                        <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
+                          <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">サンプルコード</h5>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">実装例とベストプラクティス</p>
+                          <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                            例を見る →
+                          </a>
+                        </div>
+                        
+                        <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
+                          <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Postmanコレクション</h5>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">API テスト用コレクション</p>
+                          <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                            インポート →
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {activeTab === 'help' && (
                 <div className="space-y-6">
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">DNS設定ヘルプ</h3>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">ヘルプ & セキュリティガイド</h3>
                   
-                  {/* DNS認証について */}
-                  <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
-                    <div className="px-4 py-5 sm:p-6">
-                      <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
-                        <InformationCircleIcon className="w-5 h-5 mr-2 text-blue-500" />
-                        DNS認証とは
-                      </h4>
-                      <div className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
-                        <p>
-                          DNS認証は、あなたがドメインの正当な所有者であることを確認するプロセスです。
-                          FearlockでドメインのDNSを管理するには、ドメインレジストラーでネームサーバーの変更が必要です。
-                        </p>
-                        <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
-                          <p className="text-blue-800 dark:text-blue-200">
-                            💡 DNS認証が完了すると、Fearlockがドメインの全てのDNSレコードを管理できるようになります。
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                  {/* ヘルプカテゴリータブ */}
+                  <div className="border-b border-gray-200 dark:border-gray-600">
+                    <nav className="-mb-px flex space-x-8">
+                      {[
+                        { id: 'getting-started', name: '初めてガイド', icon: BookOpenIcon },
+                        { id: 'security-basics', name: 'セキュリティ基礎', icon: ShieldCheckIcon },
+                        { id: 'threats', name: '脅威と対策', icon: ExclamationTriangleIcon },
+                        { id: 'dns-help', name: 'DNS設定', icon: GlobeAltIcon },
+                        { id: 'faq', name: 'FAQ', icon: QuestionMarkCircleIcon },
+                      ].map((tab) => (
+                        <button
+                          key={tab.id}
+                          onClick={() => setHelpSubTab(tab.id)}
+                          className={`${
+                            helpSubTab === tab.id
+                              ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300'
+                          } flex items-center whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm`}
+                        >
+                          <tab.icon className="w-4 h-4 mr-2" />
+                          {tab.name}
+                        </button>
+                      ))}
+                    </nav>
                   </div>
 
-                  {/* ネームサーバー設定手順 */}
-                  <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
-                    <div className="px-4 py-5 sm:p-6">
-                      <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
-                        <GlobeAltIcon className="w-5 h-5 mr-2 text-green-500" />
-                        ネームサーバー設定手順
-                      </h4>
-                      <div className="space-y-4">
-                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                          <h5 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
-                            Fearlockネームサーバー:
-                          </h5>
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <code className="text-sm bg-white dark:bg-gray-800 px-2 py-1 rounded border">
-                                ns1.fearlock.com
-                              </code>
-                              <button
-                                onClick={() => navigator.clipboard.writeText('ns1.fearlock.com')}
-                                className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
-                              >
-                                コピー
-                              </button>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <code className="text-sm bg-white dark:bg-gray-800 px-2 py-1 rounded border">
-                                ns2.fearlock.com
-                              </code>
-                              <button
-                                onClick={() => navigator.clipboard.writeText('ns2.fearlock.com')}
-                                className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
-                              >
-                                コピー
-                              </button>
+                  {/* 初めてガイド */}
+                  {helpSubTab === 'getting-started' && (
+                    <div className="space-y-6">
+                      {/* プラットフォーム概要 */}
+                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
+                        <div className="flex items-start">
+                          <BookOpenIcon className="w-8 h-8 text-blue-500 dark:text-blue-400 mt-1 mr-4" />
+                          <div>
+                            <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">
+                              Fearlockへようこそ！
+                            </h4>
+                            <p className="text-blue-800 dark:text-blue-200 mb-4">
+                              Fearlockは包括的なセキュリティプラットフォームです。Webサイトの脆弱性スキャン、WAFファイアウォール、ネットワーク監視、アラート管理まで、あらゆるセキュリティニーズに対応します。
+                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-blue-200 dark:border-blue-600">
+                                <h5 className="font-medium text-gray-900 dark:text-white mb-2">🛡️ 完全保護</h5>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">
+                                  多層防御でWebサイトを24/7保護
+                                </p>
+                              </div>
+                              <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-blue-200 dark:border-blue-600">
+                                <h5 className="font-medium text-gray-900 dark:text-white mb-2">⚡ リアルタイム</h5>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">
+                                  脅威を即座に検出・遮断
+                                </p>
+                              </div>
                             </div>
                           </div>
                         </div>
-                        
-                        <div className="space-y-3">
-                          <h5 className="text-sm font-medium text-gray-900 dark:text-white">設定手順:</h5>
-                          <ol className="space-y-2 text-sm text-gray-600 dark:text-gray-300 list-decimal list-inside">
-                            <li>ドメインレジストラー（お名前.com、ムームードメインなど）にログインする</li>
-                            <li>ドメイン管理画面またはDNS設定画面を開く</li>
-                            <li>「ネームサーバー設定」または「DNS設定」を選択</li>
-                            <li>上記のFearlockネームサーバーに変更する</li>
-                            <li>変更を保存する</li>
-                            <li>反映まで24-48時間待つ</li>
-                          </ol>
-                        </div>
                       </div>
-                    </div>
-                  </div>
 
-                  {/* よくある質問 */}
-                  <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
-                    <div className="px-4 py-5 sm:p-6">
-                      <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
-                        <CheckCircleIcon className="w-5 h-5 mr-2 text-purple-500" />
-                        よくある質問
-                      </h4>
-                      <div className="space-y-4">
-                        <div>
-                          <h5 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
-                            Q: DNS設定の反映にはどのくらい時間がかかりますか？
-                          </h5>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
-                            A: 通常は数時間から24時間以内に反映されますが、最大48時間かかる場合があります。
-                            これは各プロバイダーのDNSキャッシュの更新頻度によって異なります。
-                          </p>
+                      {/* ステップバイステップガイド */}
+                      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg border border-gray-200 dark:border-gray-600">
+                        <div className="px-6 py-5">
+                          <h4 className="text-md font-medium text-gray-900 dark:text-white mb-6 flex items-center">
+                            <PlayIcon className="w-5 h-5 mr-2 text-green-500" />
+                            5分で始める完全ガイド
+                          </h4>
+                          <div className="space-y-6">
+                            {[
+                              {
+                                step: 1,
+                                title: "ドメインを追加",
+                                description: "保護したいWebサイトのドメインを登録します",
+                                action: "組織設定 > 管理ドメイン > ドメインを追加",
+                                color: "blue"
+                              },
+                              {
+                                step: 2,
+                                title: "脆弱性スキャン実行",
+                                description: "Webサイトの弱点を自動スキャンで発見",
+                                action: "脆弱性スキャン > 新しいスキャン開始",
+                                color: "purple"
+                              },
+                              {
+                                step: 3,
+                                title: "WAFファイアウォール設定",
+                                description: "悪意のあるトラフィックを自動ブロック",
+                                action: "ファイアウォール > WAF設定を有効化",
+                                color: "red"
+                              },
+                              {
+                                step: 4,
+                                title: "アラート設定",
+                                description: "重要な脅威を即座に通知受信",
+                                action: "設定 > 通知設定 > アラート設定",
+                                color: "yellow"
+                              },
+                              {
+                                step: 5,
+                                title: "監視開始",
+                                description: "ダッシュボードでリアルタイム状況確認",
+                                action: "ダッシュボード > 監視状態確認",
+                                color: "green"
+                              }
+                            ].map((item) => (
+                              <div key={item.step} className="flex items-start space-x-4">
+                                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium
+                                  ${item.color === 'blue' ? 'bg-blue-500' :
+                                    item.color === 'purple' ? 'bg-purple-500' :
+                                    item.color === 'red' ? 'bg-red-500' :
+                                    item.color === 'yellow' ? 'bg-yellow-500' :
+                                    'bg-green-500'
+                                  }`}>
+                                  {item.step}
+                                </div>
+                                <div className="flex-1">
+                                  <h5 className="font-medium text-gray-900 dark:text-white">{item.title}</h5>
+                                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{item.description}</p>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                                    {item.action}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                        
-                        <div>
-                          <h5 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
-                            Q: ネームサーバーを変更すると既存のメールやウェブサイトは停止しますか？
-                          </h5>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
-                            A: ドメイン追加時にDNSレコードをスキャンし、既存の設定を移行するため、
-                            適切に設定すれば停止時間を最小限に抑えることができます。
-                          </p>
+                      </div>
+
+                      {/* 重要なポイント */}
+                      <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-lg p-4">
+                        <div className="flex">
+                          <LightBulbIcon className="w-5 h-5 text-amber-500 dark:text-amber-400 mt-0.5 mr-3" />
+                          <div>
+                            <h5 className="font-medium text-amber-800 dark:text-amber-200 mb-2">
+                              💡 成功のポイント
+                            </h5>
+                            <ul className="text-sm text-amber-700 dark:text-amber-300 space-y-1">
+                              <li>• <strong>定期スキャン</strong>: 最低でも週1回の脆弱性スキャン実行</li>
+                              <li>• <strong>アラート確認</strong>: 重要度「高」以上は24時間以内に対応</li>
+                              <li>• <strong>ログ監視</strong>: 異常なトラフィックパターンに注意</li>
+                              <li>• <strong>更新管理</strong>: セキュリティルールの定期更新</li>
+                            </ul>
+                          </div>
                         </div>
-                        
-                        <div>
-                          <h5 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
-                            Q: DNS認証が失敗する場合はどうすればよいですか？
-                          </h5>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* セキュリティ基礎 */}
+                  {helpSubTab === 'security-basics' && (
+                    <div className="space-y-6">
+                      {/* セキュリティの重要性 */}
+                      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg border border-gray-200 dark:border-gray-600">
+                        <div className="px-6 py-5">
+                          <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                            <ShieldCheckIcon className="w-5 h-5 mr-2 text-blue-500" />
+                            なぜWebセキュリティが重要なのか？
+                          </h4>
+                          <div className="space-y-4 text-sm text-gray-600 dark:text-gray-300">
+                            <p>
+                              現代のWebサイトは24時間365日、世界中から攻撃にさらされています。
+                              適切なセキュリティ対策を怠ると、ビジネスに深刻な影響を与える可能性があります。
+                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <div className="bg-red-50 dark:bg-red-900/30 p-4 rounded-lg border border-red-200 dark:border-red-700">
+                                <h5 className="font-medium text-red-800 dark:text-red-200 mb-2">💸 金銭的損失</h5>
+                                <p className="text-xs text-red-700 dark:text-red-300">
+                                  データ漏洩1件あたり平均4.45億円の損失（IBM調査）
+                                </p>
+                              </div>
+                              <div className="bg-orange-50 dark:bg-orange-900/30 p-4 rounded-lg border border-orange-200 dark:border-orange-700">
+                                <h5 className="font-medium text-orange-800 dark:text-orange-200 mb-2">📉 信頼失墜</h5>
+                                <p className="text-xs text-orange-700 dark:text-orange-300">
+                                  顧客の83%がセキュリティ事故後に利用を停止
+                                </p>
+                              </div>
+                              <div className="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg border border-purple-200 dark:border-purple-700">
+                                <h5 className="font-medium text-purple-800 dark:text-purple-200 mb-2">⚖️ 法的責任</h5>
+                                <p className="text-xs text-purple-700 dark:text-purple-300">
+                                  GDPR違反で最大売上の4%または2,000万ユーロの罰金
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 基本的なセキュリティ概念 */}
+                      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg border border-gray-200 dark:border-gray-600">
+                        <div className="px-6 py-5">
+                          <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                            <AcademicCapIcon className="w-5 h-5 mr-2 text-green-500" />
+                            セキュリティの基本概念
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {[
+                              {
+                                icon: "🔒",
+                                title: "機密性 (Confidentiality)",
+                                description: "認可された人のみがデータにアクセスできること",
+                                example: "暗号化、アクセス制御"
+                              },
+                              {
+                                icon: "🛡️",
+                                title: "完全性 (Integrity)",
+                                description: "データが改ざんされていないことを保証",
+                                example: "デジタル署名、ハッシュ値検証"
+                              },
+                              {
+                                icon: "🌐",
+                                title: "可用性 (Availability)",
+                                description: "必要な時にシステムが利用可能であること",
+                                example: "冗長化、DDoS対策"
+                              },
+                              {
+                                icon: "👤",
+                                title: "認証 (Authentication)",
+                                description: "ユーザーの身元を確認すること",
+                                example: "パスワード、二要素認証"
+                              }
+                            ].map((concept, index) => (
+                              <div key={index} className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
+                                <div className="flex items-start space-x-3">
+                                  <span className="text-2xl">{concept.icon}</span>
+                                  <div>
+                                    <h5 className="font-medium text-gray-900 dark:text-white mb-1">{concept.title}</h5>
+                                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{concept.description}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 italic">例: {concept.example}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* セキュリティのベストプラクティス */}
+                      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg border border-gray-200 dark:border-gray-600">
+                        <div className="px-6 py-5">
+                          <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                            <CheckBadgeIcon className="w-5 h-5 mr-2 text-purple-500" />
+                            実践すべき基本対策
+                          </h4>
+                          <div className="space-y-4">
+                            {[
+                              {
+                                category: "アクセス制御",
+                                items: [
+                                  "強固なパスワードポリシーの実施",
+                                  "二要素認証の有効化",
+                                  "最小権限の原則の適用",
+                                  "定期的なアクセス権限の見直し"
+                                ]
+                              },
+                              {
+                                category: "システム保護",
+                                items: [
+                                  "定期的なソフトウェア更新",
+                                  "不要なサービスの無効化",
+                                  "ファイアウォールの設定",
+                                  "侵入検知システムの導入"
+                                ]
+                              },
+                              {
+                                category: "データ保護",
+                                items: [
+                                  "機密データの暗号化",
+                                  "定期的なバックアップ",
+                                  "データ保持ポリシーの策定",
+                                  "安全なデータ廃棄"
+                                ]
+                              },
+                              {
+                                category: "監視・対応",
+                                items: [
+                                  "セキュリティログの監視",
+                                  "インシデント対応計画の策定",
+                                  "定期的なセキュリティ訓練",
+                                  "第三者による脆弱性評価"
+                                ]
+                              }
+                            ].map((section, index) => (
+                              <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                                <h5 className="font-medium text-gray-900 dark:text-white mb-3">{section.category}</h5>
+                                <ul className="space-y-1">
+                                  {section.items.map((item, itemIndex) => (
+                                    <li key={itemIndex} className="text-sm text-gray-600 dark:text-gray-300 flex items-center">
+                                      <CheckIcon className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+                                      {item}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 脅威と対策 */}
+                  {helpSubTab === 'threats' && (
+                    <div className="space-y-6">
+                      {/* サイバー攻撃の現状 */}
+                      <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg p-6">
+                        <div className="flex items-start">
+                          <ExclamationTriangleIcon className="w-8 h-8 text-red-500 dark:text-red-400 mt-1 mr-4" />
+                          <div>
+                            <h4 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-3">
+                              深刻化するサイバー脅威
+                            </h4>
+                            <p className="text-red-800 dark:text-red-200 mb-4">
+                              2024年現在、サイバー攻撃は年々巧妙化・大規模化しています。中小企業も例外ではなく、むしろ狙われやすい傾向にあります。
+                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                <h5 className="font-medium text-gray-900 dark:text-white mb-1">39秒に1回</h5>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">サイバー攻撃の発生頻度</p>
+                              </div>
+                              <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                <h5 className="font-medium text-gray-900 dark:text-white mb-1">43%</h5>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">中小企業への攻撃割合</p>
+                              </div>
+                              <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                <h5 className="font-medium text-gray-900 dark:text-white mb-1">287日</h5>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">侵害発見までの平均日数</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 主要な脅威タイプ */}
+                      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg border border-gray-200 dark:border-gray-600">
+                        <div className="px-6 py-5">
+                          <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                            <BugAntIcon className="w-5 h-5 mr-2 text-red-500" />
+                            よくあるサイバー攻撃と被害事例
+                          </h4>
+                          <div className="space-y-6">
+                            {[
+                              {
+                                name: "SQLインジェクション",
+                                icon: "💉",
+                                severity: "高",
+                                description: "データベースへの不正アクセスを可能にする攻撃",
+                                impact: "顧客情報漏洩、業務停止、法的責任",
+                                example: "2023年、某ECサイトで100万件の顧客情報が漏洩。損害賠償で12億円の損失",
+                                prevention: "入力値検証、パラメータ化クエリ、WAFによる防御"
+                              },
+                              {
+                                name: "クロスサイトスクリプティング(XSS)",
+                                icon: "🎭",
+                                severity: "中",
+                                description: "悪意のあるスクリプトをWebページに埋め込む攻撃",
+                                impact: "セッション乗っ取り、個人情報窃取、マルウェア感染",
+                                example: "SNSサイトでXSS攻撃により、ユーザーのアカウントが次々と乗っ取られる",
+                                prevention: "出力値のエスケープ、CSPヘッダー設定、Fearlockによる自動検出"
+                              },
+                              {
+                                name: "DDoS攻撃",
+                                icon: "🌊",
+                                severity: "高",
+                                description: "大量のトラフィックでサービスを停止させる攻撃",
+                                impact: "サービス停止、機会損失、復旧コスト",
+                                example: "オンライン銀行が3時間のDDoS攻撃で停止。推定被害額8億円",
+                                prevention: "トラフィック分散、CDN利用、WAFによる緩和"
+                              },
+                              {
+                                name: "マルウェア感染",
+                                icon: "🦠",
+                                severity: "高",
+                                description: "悪意のあるソフトウェアによるシステム侵害",
+                                impact: "データ暗号化、身代金要求、情報窃取",
+                                example: "ランサムウェア「WannaCry」で世界30万台のPCが感染",
+                                prevention: "定期更新、アンチマルウェア、従業員教育"
+                              },
+                              {
+                                name: "フィッシング攻撃",
+                                icon: "🎣",
+                                severity: "中",
+                                description: "偽装メールやサイトで認証情報を窃取",
+                                impact: "アカウント乗っ取り、金銭被害、情報漏洩",
+                                example: "偽Amazon通知で年間2,000万人以上が被害（FTC調査）",
+                                prevention: "従業員教育、メールフィルタリング、二要素認証"
+                              }
+                            ].map((threat, index) => (
+                              <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-5">
+                                <div className="flex items-start justify-between mb-3">
+                                  <div className="flex items-center">
+                                    <span className="text-2xl mr-3">{threat.icon}</span>
+                                    <div>
+                                      <h5 className="font-medium text-gray-900 dark:text-white">{threat.name}</h5>
+                                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                                        threat.severity === '高' 
+                                          ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                                          : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+                                      }`}>
+                                        危険度: {threat.severity}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{threat.description}</p>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                  <div>
+                                    <h6 className="font-medium text-gray-900 dark:text-white mb-1">被害内容</h6>
+                                    <p className="text-gray-600 dark:text-gray-300">{threat.impact}</p>
+                                  </div>
+                                  <div>
+                                    <h6 className="font-medium text-gray-900 dark:text-white mb-1">実際の事例</h6>
+                                    <p className="text-gray-600 dark:text-gray-300">{threat.example}</p>
+                                  </div>
+                                  <div>
+                                    <h6 className="font-medium text-gray-900 dark:text-white mb-1">対策方法</h6>
+                                    <p className="text-gray-600 dark:text-gray-300">{threat.prevention}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 緊急時の対応 */}
+                      <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-lg p-6">
+                        <h4 className="text-md font-medium text-yellow-800 dark:text-yellow-200 mb-4 flex items-center">
+                          <ExclamationTriangleIcon className="w-5 h-5 mr-2" />
+                          セキュリティインシデント発生時の対応
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <h5 className="font-medium text-yellow-800 dark:text-yellow-200 mb-3">初動対応（最初の1時間）</h5>
+                            <ol className="space-y-2 text-sm text-yellow-700 dark:text-yellow-300 list-decimal list-inside">
+                              <li>影響範囲の特定と記録</li>
+                              <li>攻撃の継続確認と遮断</li>
+                              <li>関係者への緊急連絡</li>
+                              <li>証拠保全とログ収集</li>
+                              <li>サービス停止の判断</li>
+                            </ol>
+                          </div>
+                          <div>
+                            <h5 className="font-medium text-yellow-800 dark:text-yellow-200 mb-3">継続対応（24時間以内）</h5>
+                            <ol className="space-y-2 text-sm text-yellow-700 dark:text-yellow-300 list-decimal list-inside">
+                              <li>詳細な被害調査</li>
+                              <li>脆弱性の特定と修正</li>
+                              <li>バックアップからの復旧</li>
+                              <li>顧客・監督官庁への報告</li>
+                              <li>再発防止策の策定</li>
+                            </ol>
+                          </div>
+                        </div>
+                        <div className="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg">
                           <p className="text-sm text-gray-600 dark:text-gray-300">
-                            A: 以下をご確認ください：<br />
-                            • ネームサーバーが正しく設定されているか<br />
-                            • 24-48時間経過しているか<br />
-                            • ドメインレジストラーでの変更が保存されているか
+                            <strong>緊急サポート:</strong> セキュリティインシデント発生時は、
+                            <span className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mx-1">
+                              emergency@fearlock.com
+                            </span>
+                            または緊急ダイヤル <strong>0120-XXX-XXX</strong> にご連絡ください。
                           </p>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* DNS設定ヘルプ */}
+                  {helpSubTab === 'dns-help' && (
+                    <div className="space-y-6">
+                      {/* DNS認証について */}
+                      <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
+                        <div className="px-4 py-5 sm:p-6">
+                          <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                            <InformationCircleIcon className="w-5 h-5 mr-2 text-blue-500" />
+                            DNS認証とは
+                          </h4>
+                          <div className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
+                            <p>
+                              DNS認証は、あなたがドメインの正当な所有者であることを確認するプロセスです。
+                              FearlockでドメインのDNSを管理するには、ドメインレジストラーでネームサーバーの変更が必要です。
+                            </p>
+                            <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                              <p className="text-blue-800 dark:text-blue-200">
+                                💡 DNS認証が完了すると、Fearlockがドメインの全てのDNSレコードを管理できるようになります。
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* ネームサーバー設定手順 */}
+                      <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
+                        <div className="px-4 py-5 sm:p-6">
+                          <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                            <GlobeAltIcon className="w-5 h-5 mr-2 text-green-500" />
+                            ネームサーバー設定手順
+                          </h4>
+                          <div className="space-y-4">
+                            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                              <h5 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
+                                Fearlockネームサーバー:
+                              </h5>
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <code className="text-sm bg-white dark:bg-gray-800 px-2 py-1 rounded border">
+                                    ns1.fearlock.com
+                                  </code>
+                                  <button
+                                    onClick={() => navigator.clipboard.writeText('ns1.fearlock.com')}
+                                    className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                                  >
+                                    コピー
+                                  </button>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <code className="text-sm bg-white dark:bg-gray-800 px-2 py-1 rounded border">
+                                    ns2.fearlock.com
+                                  </code>
+                                  <button
+                                    onClick={() => navigator.clipboard.writeText('ns2.fearlock.com')}
+                                    className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                                  >
+                                    コピー
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-3">
+                              <h5 className="text-sm font-medium text-gray-900 dark:text-white">設定手順:</h5>
+                              <ol className="space-y-2 text-sm text-gray-600 dark:text-gray-300 list-decimal list-inside">
+                                <li>ドメインレジストラー（お名前.com、ムームードメインなど）にログインする</li>
+                                <li>ドメイン管理画面またはDNS設定画面を開く</li>
+                                <li>「ネームサーバー設定」または「DNS設定」を選択</li>
+                                <li>上記のFearlockネームサーバーに変更する</li>
+                                <li>変更を保存する</li>
+                                <li>反映まで24-48時間待つ</li>
+                              </ol>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* DNS関連のよくある質問 */}
+                      <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-600">
+                        <div className="px-4 py-5 sm:p-6">
+                          <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                            <QuestionMarkCircleIcon className="w-5 h-5 mr-2 text-purple-500" />
+                            DNS設定 よくある質問
+                          </h4>
+                          <div className="space-y-4">
+                            <div>
+                              <h5 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                Q: DNS設定の反映にはどれくらい時間がかかりますか？
+                              </h5>
+                              <p className="text-sm text-gray-600 dark:text-gray-300">
+                                A: 通常は数時間から24時間以内に反映されますが、最大48時間かかる場合があります。
+                                これは各プロバイダーのDNSキャッシュの更新頻度によって異なります。
+                              </p>
+                            </div>
+                            
+                            <div>
+                              <h5 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                Q: ネームサーバーを変更すると既存のメールやウェブサイトは停止しますか？
+                              </h5>
+                              <p className="text-sm text-gray-600 dark:text-gray-300">
+                                A: ドメイン追加時にDNSレコードをスキャンし、既存の設定を移行するため、
+                                適切に設定すれば停止時間を最小限に抑えることができます。
+                              </p>
+                            </div>
+                            
+                            <div>
+                              <h5 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                Q: DNS認証が失敗する場合はどうすればよいですか？
+                              </h5>
+                              <p className="text-sm text-gray-600 dark:text-gray-300">
+                                A: 以下をご確認ください：<br />
+                                • ネームサーバーが正しく設定されているか<br />
+                                • 24-48時間経過しているか<br />
+                                • ドメインレジストラーでの変更が保存されているか
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* FAQ */}
+                  {helpSubTab === 'faq' && (
+                    <div className="space-y-6">
+                      {/* 一般的な質問 */}
+                      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg border border-gray-200 dark:border-gray-600">
+                        <div className="px-6 py-5">
+                          <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                            <QuestionMarkCircleIcon className="w-5 h-5 mr-2 text-blue-500" />
+                            よくある質問
+                          </h4>
+                          <div className="space-y-6">
+                            {[
+                              {
+                                category: "料金・プラン",
+                                questions: [
+                                  {
+                                    q: "無料プランはありますか？",
+                                    a: "はい、基本的な脆弱性スキャンとアラート機能を含む無料プランをご用意しています。詳細は料金ページをご確認ください。"
+                                  },
+                                  {
+                                    q: "プランの変更はいつでもできますか？",
+                                    a: "はい、いつでもプランの変更が可能です。アップグレードは即座に反映され、ダウングレードは次回請求期間から適用されます。"
+                                  }
+                                ]
+                              },
+                              {
+                                category: "機能・使い方",
+                                questions: [
+                                  {
+                                    q: "スキャンはどのくらいの頻度で実行すべきですか？",
+                                    a: "本番環境では週1回、開発環境では日次でのスキャンを推奨します。重要な更新後は即座にスキャンを実行することをお勧めします。"
+                                  },
+                                  {
+                                    q: "複数のドメインを管理できますか？",
+                                    a: "はい、プランに応じて複数ドメインの管理が可能です。Standardプランで5ドメイン、Enterpriseプランで無制限です。"
+                                  },
+                                  {
+                                    q: "APIでの自動化は可能ですか？",
+                                    a: "はい、REST APIを提供しており、スキャンの自動実行、結果取得、設定変更などが可能です。"
+                                  }
+                                ]
+                              },
+                              {
+                                category: "技術・トラブル",
+                                questions: [
+                                  {
+                                    q: "偽陽性（誤検出）が発生したらどうすればよいですか？",
+                                    a: "検出結果画面で「誤検出として報告」ボタンをクリックし、詳細をお知らせください。今後のスキャンから除外するよう調整いたします。"
+                                  },
+                                  {
+                                    q: "スキャンがサイトのパフォーマンスに影響しますか？",
+                                    a: "Fearlockのスキャンは最適化されており、通常のWebサイト運用に大きな影響を与えません。必要に応じてスキャン速度の調整も可能です。"
+                                  },
+                                  {
+                                    q: "プライベートネットワーク内のサイトもスキャンできますか？",
+                                    a: "Enterprise プランでは、VPN接続やAgent機能により、プライベートネットワーク内のリソースもスキャン可能です。"
+                                  }
+                                ]
+                              }
+                            ].map((section, sectionIndex) => (
+                              <div key={sectionIndex}>
+                                <h5 className="font-medium text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-600 pb-2">
+                                  {section.category}
+                                </h5>
+                                <div className="space-y-4">
+                                  {section.questions.map((item, itemIndex) => (
+                                    <div key={itemIndex} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                                      <h6 className="font-medium text-gray-900 dark:text-white mb-2">
+                                        Q: {item.q}
+                                      </h6>
+                                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                                        A: {item.a}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 用語集 */}
+                      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg border border-gray-200 dark:border-gray-600">
+                        <div className="px-6 py-5">
+                          <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+                            <BookOpenIcon className="w-5 h-5 mr-2 text-green-500" />
+                            セキュリティ用語集
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                              { term: "脆弱性", definition: "システムの弱点。攻撃者に悪用される可能性がある欠陥やバグ" },
+                              { term: "ペネトレーションテスト", definition: "システムに対して実際に攻撃を仕掛けてセキュリティを検証するテスト" },
+                              { term: "WAF", definition: "Webアプリケーションファイアウォール。Webアプリへの攻撃を防ぐ仕組み" },
+                              { term: "ゼロデイ攻撃", definition: "まだ修正パッチが提供されていない脆弱性を狙う攻撃" },
+                              { term: "OWASP", definition: "Webアプリケーションセキュリティの向上を目指す国際的な非営利団体" },
+                              { term: "CSP", definition: "Content Security Policy。XSS攻撃を防ぐためのセキュリティ仕組み" },
+                              { term: "HTTPS", definition: "HTTP通信を暗号化するプロトコル。SSL/TLS証明書が必要" },
+                              { term: "ハニーポット", definition: "攻撃者を誘き寄せて攻撃手法を分析するためのおとりシステム" }
+                            ].map((item, index) => (
+                              <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                                <h5 className="font-medium text-gray-900 dark:text-white mb-2">{item.term}</h5>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">{item.definition}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* サポート情報 */}
-                  <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                  <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
                     <div className="flex items-start">
-                      <InformationCircleIcon className="w-5 h-5 text-blue-500 dark:text-blue-400 mt-0.5 mr-2" />
-                      <div>
-                        <h5 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">
-                          サポートが必要ですか？
+                      <InformationCircleIcon className="w-6 h-6 text-blue-500 dark:text-blue-400 mt-1 mr-4" />
+                      <div className="flex-1">
+                        <h5 className="text-md font-medium text-blue-800 dark:text-blue-200 mb-3">
+                          さらにサポートが必要ですか？
                         </h5>
-                        <p className="text-sm text-blue-700 dark:text-blue-300">
-                          DNS設定でお困りの場合は、サポートチームがお手伝いします。
-                          <a href="mailto:support@fearlock.com" className="underline hover:no-underline ml-1">
-                            support@fearlock.com
-                          </a>
-                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                            <h6 className="font-medium text-gray-900 dark:text-white mb-2">📧 メールサポート</h6>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                              一般的なお問い合わせ
+                            </p>
+                            <a href="mailto:support@fearlock.com" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                              support@fearlock.com
+                            </a>
+                          </div>
+                          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                            <h6 className="font-medium text-gray-900 dark:text-white mb-2">🚨 緊急サポート</h6>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                              セキュリティインシデント対応
+                            </p>
+                            <p className="text-sm text-blue-600 dark:text-blue-400">
+                              0120-XXX-XXX (24時間)
+                            </p>
+                          </div>
+                          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                            <h6 className="font-medium text-gray-900 dark:text-white mb-2">💬 チャットサポート</h6>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                              リアルタイムサポート
+                            </p>
+                            <button className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                              チャットを開始
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
-
             </div>
           </motion.div>
         </div>
