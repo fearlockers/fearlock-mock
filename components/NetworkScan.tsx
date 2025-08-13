@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useAuth } from '@/hooks/useAuth'
+import type { Project } from '@/lib/auth'
 import {
   PlayIcon,
   StopIcon,
@@ -11,6 +13,8 @@ import {
   ClockIcon,
   GlobeAltIcon,
   CpuChipIcon,
+  DocumentTextIcon,
+  FolderIcon,
 } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 
@@ -98,6 +102,43 @@ export default function NetworkScan() {
   const [selectedTarget, setSelectedTarget] = useState<string>('all')
   const [isScanning, setIsScanning] = useState(false)
   const [scanProgress, setScanProgress] = useState(0)
+  const [projects, setProjects] = useState<Project[]>([])
+  const [selectedProject, setSelectedProject] = useState<string>('')
+  const [isLoadingProjects, setIsLoadingProjects] = useState(false)
+
+  const { getOrganizationProjects, organization, profile } = useAuth()
+
+  // プロジェクト一覧を読み込み
+  const loadProjects = async () => {
+    setIsLoadingProjects(true)
+    try {
+      console.log('🔍 NetworkScan: プロジェクト読み込み開始')
+      const result = await getOrganizationProjects()
+      console.log('🔍 NetworkScan: プロジェクト取得結果:', result)
+      
+      if (result.success && result.data) {
+        console.log('🔍 NetworkScan: プロジェクト取得成功:', result.data.length, '件')
+        setProjects(result.data)
+        // 初期状態ではプロジェクトを選択しない
+      } else {
+        console.error('❌ NetworkScan: プロジェクト取得失敗:', result.error)
+      }
+    } catch (error) {
+      console.error('❌ NetworkScan: プロジェクト取得エラー:', error)
+    } finally {
+      setIsLoadingProjects(false)
+    }
+  }
+
+  // 組織情報が読み込まれた後にプロジェクトを読み込み（初回のみ）
+  useEffect(() => {
+    if ((organization?.id || profile?.organization_id) && projects.length === 0) {
+      console.log('🔍 NetworkScan: 組織情報が利用可能、プロジェクトを読み込み')
+      loadProjects()
+    } else if (!organization?.id && !profile?.organization_id) {
+      console.log('🔍 NetworkScan: 組織情報がまだ利用不可')
+    }
+  }, [organization?.id, profile?.organization_id])
 
   const startScan = () => {
     setIsScanning(true)
@@ -132,10 +173,84 @@ export default function NetworkScan() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* 左側: プロジェクト作成とスキャン設定 */}
+        <div className="lg:col-span-1 space-y-6">
+          {/* プロジェクト選択 */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-white dark:bg-gray-800 shadow rounded-lg"
+          >
+            <div className="px-4 py-5 sm:p-6">
+              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 mb-4">
+                プロジェクト選択
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    プロジェクト
+                  </label>
+                  {isLoadingProjects ? (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                    </div>
+                  ) : projects.length === 0 ? (
+                    <div className="text-center py-4">
+                      <FolderIcon className="mx-auto h-8 w-8 text-gray-400" />
+                      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">プロジェクトがありません</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">プロジェクト画面でプロジェクトを作成してください</p>
+                    </div>
+                  ) : (
+                    <select
+                      value={selectedProject}
+                      onChange={(e) => setSelectedProject(e.target.value)}
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    >
+                      <option value="">プロジェクトを選択してください</option>
+                      {projects.map((project) => (
+                        <option key={project.id} value={project.id}>
+                          {project.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+
+                {selectedProject && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      選択されたプロジェクト
+                    </label>
+                    <div className="bg-gray-50 dark:bg-gray-700 rounded-md p-3">
+                      {projects.find(p => p.id === selectedProject) && (
+                        <div>
+                          <h4 className="font-medium text-gray-900 dark:text-gray-100">
+                            {projects.find(p => p.id === selectedProject)?.name}
+                          </h4>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            {projects.find(p => p.id === selectedProject)?.description || '説明なし'}
+                          </p>
+                          {projects.find(p => p.id === selectedProject)?.url && (
+                            <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                              {projects.find(p => p.id === selectedProject)?.url}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* スキャン設定 */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="lg:col-span-1 bg-white dark:bg-gray-800 shadow rounded-lg"
+            transition={{ delay: 0.1 }}
+            className="bg-white dark:bg-gray-800 shadow rounded-lg"
         >
           <div className="px-4 py-5 sm:p-6">
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 mb-4">
@@ -219,10 +334,12 @@ export default function NetworkScan() {
             </div>
           </div>
         </motion.div>
+        </div>
 
+        {/* 右側: 検出された脆弱性 */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
           className="lg:col-span-2 bg-white dark:bg-gray-800 shadow rounded-lg"
         >

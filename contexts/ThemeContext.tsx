@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import { getCookie, setSessionCookie } from '@/lib/cookies'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -17,8 +18,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>('light')
 
   useEffect(() => {
-    // ローカルストレージからテーマを読み込み
-    const savedTheme = localStorage.getItem('theme') as Theme
+    // Cookieからテーマを読み込み
+    const savedTheme = getCookie('theme') as Theme
     if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
       setTheme(savedTheme)
     }
@@ -56,7 +57,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const handleSetTheme = (newTheme: Theme) => {
     setTheme(newTheme)
-    localStorage.setItem('theme', newTheme)
+    setSessionCookie('theme', newTheme)
   }
 
   return (

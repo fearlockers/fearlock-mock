@@ -15,16 +15,22 @@
     "cf:deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
+    "@hookform/resolvers": "^3.3.2",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/auth-helpers-react": "^0.5.0",
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.52.1",
+    "date-fns": "^2.30.0",
+    "framer-motion": "^10.16.16",
     "next": "^14.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@heroicons/react": "^2.0.18",
-    "@headlessui/react": "^1.7.17",
-    "recharts": "^2.8.0",
-    "date-fns": "^2.30.0",
-    "framer-motion": "^10.16.16",
     "react-hook-form": "^7.48.2",
-    "@hookform/resolvers": "^3.3.2",
+    "recharts": "^2.8.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -39,4 +45,4 @@
     "typescript": "^5.3.3",
     "wrangler": "^3.0.0"
   }
-} 
+}

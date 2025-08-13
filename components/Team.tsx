@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   UserGroupIcon,
   PlusIcon,
@@ -13,8 +13,12 @@ import {
   MagnifyingGlassIcon,
   UserPlusIcon,
   CalendarIcon,
+  Cog6ToothIcon,
 } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
+import { useAuth } from '@/hooks/useAuth'
+import type { OrganizationMember } from '@/lib/auth'
+import EmailTemplateSetup from './EmailTemplateSetup'
 
 const roles = [
   { id: 'admin', name: '管理者', color: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' },
@@ -91,15 +95,84 @@ export default function Team() {
   const [roleFilter, setRoleFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
   const [showInviteModal, setShowInviteModal] = useState(false)
-  const [selectedMember, setSelectedMember] = useState<any>(null)
+  const [showEmailTemplateModal, setShowEmailTemplateModal] = useState(false)
+  const [selectedMember, setSelectedMember] = useState<OrganizationMember | null>(null)
+  const [members, setMembers] = useState<OrganizationMember[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  const [inviteForm, setInviteForm] = useState({
+    email: '',
+    first_name: '',
+    last_name: '',
+    role: 'member'
+  })
+  const [isInviting, setIsInviting] = useState(false)
+  
+  const { organization, getOrganizationMembers, updateMemberRole, inviteMember } = useAuth()
 
-  const filteredMembers = sampleTeamMembers.filter(member => {
-    const matchesSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         member.department.toLowerCase().includes(searchTerm.toLowerCase())
+  // 組織メンバーを取得
+  const loadMembers = async () => {
+    if (!organization) return
+    
+    setIsLoading(true)
+    try {
+      const result = await getOrganizationMembers()
+      if (result.success && result.data) {
+        setMembers(result.data)
+      } else {
+        setMessage({ type: 'error', text: result.error || 'メンバーの取得に失敗しました' })
+      }
+    } catch (error) {
+      console.error('メンバー取得エラー:', error)
+      setMessage({ type: 'error', text: 'メンバーの取得に失敗しました' })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // 組織が変更された時にメンバーを再取得
+  useEffect(() => {
+    if (organization) {
+      loadMembers()
+    }
+  }, [organization])
+
+  // メンバー招待処理
+  const handleInviteMember = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsInviting(true)
+    setMessage(null)
+
+    try {
+      const result = await inviteMember(inviteForm)
+      if (result.success) {
+        setMessage({ type: 'success', text: 'メンバー招待を送信しました' })
+        setShowInviteModal(false)
+        setInviteForm({ email: '', first_name: '', last_name: '', role: 'member' })
+        loadMembers() // メンバー一覧を更新
+      } else {
+        setMessage({ type: 'error', text: result.error || 'メンバー招待に失敗しました' })
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'メンバー招待に失敗しました' })
+    } finally {
+      setIsInviting(false)
+    }
+  }
+
+  const handleInviteFormChange = (field: string, value: string) => {
+    setInviteForm(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const filteredMembers = members.filter(member => {
+    const fullName = `${member.first_name || ''} ${member.last_name || ''}`.trim()
+    const matchesSearch = fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         member.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesRole = roleFilter === 'all' || member.role === roleFilter
-    const matchesStatus = statusFilter === 'all' || member.status === statusFilter
-    return matchesSearch && matchesRole && matchesStatus
+    return matchesSearch && matchesRole
   })
 
   const getRoleBadge = (roleId: string) => {
@@ -164,6 +237,14 @@ export default function Team() {
             チームメンバーの管理と権限設定
           </p>
         </div>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setShowEmailTemplateModal(true)}
+            className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-xs font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+          >
+            <Cog6ToothIcon className="w-3 h-3 mr-1.5" />
+            メール設定
+          </button>
         <button
           onClick={() => setShowInviteModal(true)}
           className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
@@ -171,6 +252,7 @@ export default function Team() {
           <UserPlusIcon className="w-3 h-3 mr-1.5" />
           メンバーを招待
         </button>
+        </div>
       </div>
 
       {/* フィルターとサーチ */}
@@ -241,7 +323,7 @@ export default function Team() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">総メンバー数</dt>
-                  <dd className="text-lg font-medium text-gray-900 dark:text-gray-100">{sampleTeamMembers.length}</dd>
+                  <dd className="text-lg font-medium text-gray-900 dark:text-gray-100">{members.length}</dd>
                 </dl>
               </div>
             </div>
@@ -258,7 +340,7 @@ export default function Team() {
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">アクティブメンバー</dt>
                   <dd className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {sampleTeamMembers.filter(m => m.status === 'active').length}
+                    {members.filter(m => m.role !== 'viewer').length}
                   </dd>
                 </dl>
               </div>
@@ -274,9 +356,9 @@ export default function Team() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">招待中</dt>
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">閲覧者</dt>
                   <dd className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {sampleTeamMembers.filter(m => m.status === 'pending').length}
+                    {members.filter(m => m.role === 'viewer').length}
                   </dd>
                 </dl>
               </div>
@@ -294,7 +376,7 @@ export default function Team() {
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">管理者</dt>
                   <dd className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {sampleTeamMembers.filter(m => m.role === 'admin').length}
+                    {members.filter(m => m.role === 'admin').length}
                   </dd>
                 </dl>
               </div>
@@ -310,7 +392,26 @@ export default function Team() {
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">チームメンバーの詳細情報と最近のアクティビティ</p>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-600">
-          {filteredMembers.map((member) => (
+          {isLoading ? (
+            <li className="px-4 py-8 text-center">
+              <div className="flex items-center justify-center">
+                <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span className="ml-2 text-gray-500 dark:text-gray-400">メンバーを読み込み中...</span>
+              </div>
+            </li>
+          ) : filteredMembers.length === 0 ? (
+            <li className="px-4 py-8 text-center">
+              <UserGroupIcon className="mx-auto h-12 w-12 text-gray-400" />
+              <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">メンバーが見つかりません</h3>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                {searchTerm ? '検索条件に一致するメンバーがいません。' : '組織にメンバーが追加されると、ここに表示されます。'}
+              </p>
+            </li>
+          ) : (
+            filteredMembers.map((member) => (
             <motion.li
               key={member.id}
               initial={{ opacity: 0, y: 20 }}
@@ -322,52 +423,32 @@ export default function Team() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center min-w-0 flex-1">
                   <div className="flex-shrink-0">
-                    <div className="h-10 w-10 rounded-full bg-gray-500 text-white flex items-center justify-center font-medium">
-                      {member.avatar}
-                    </div>
+                      <img
+                        className="h-10 w-10 rounded-full object-cover"
+                        src={member.avatar_url || '/default-avatar.svg'}
+                        alt={`${member.first_name} ${member.last_name}`}
+                      />
                   </div>
                   <div className="min-w-0 flex-1 ml-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{member.name}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                            {member.first_name} {member.last_name}
+                          </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{member.email}</p>
                       </div>
                       <div className="flex items-center space-x-2">
-                        {getStatusBadge(member.status)}
                         {getRoleBadge(member.role)}
                       </div>
                     </div>
                     <div className="mt-2 sm:flex sm:justify-between">
                       <div className="sm:flex">
                         <p className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                          <UserIcon className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
-                          {member.department}
-                        </p>
-                        <p className="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400 sm:mt-0 sm:ml-6">
                           <CalendarIcon className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
-                          最終ログイン: {formatLastLogin(member.lastLogin)}
+                            参加日: {new Date(member.created_at).toLocaleDateString('ja-JP')}
                         </p>
                       </div>
-                      <div className="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{member.recentActivity}</p>
                       </div>
-                    </div>
-                    {member.projects.length > 0 && (
-                      <div className="mt-2">
-                        <div className="flex flex-wrap gap-1">
-                          {member.projects.slice(0, 2).map((project, index) => (
-                            <span key={index} className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
-                              {project}
-                            </span>
-                          ))}
-                          {member.projects.length > 2 && (
-                            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300">
-                              +{member.projects.length - 2}個
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
                 <div className="ml-5 flex-shrink-0">
@@ -377,44 +458,125 @@ export default function Team() {
                 </div>
               </div>
             </motion.li>
-          ))}
+            ))
+          )}
         </ul>
       </div>
+
+      {/* メッセージ表示 */}
+      {message && (
+        <div className={`p-4 rounded-md ${
+          message.type === 'success' 
+            ? 'bg-green-50 dark:bg-green-900 text-green-800 dark:text-green-200' 
+            : 'bg-red-50 dark:bg-red-900 text-red-800 dark:text-red-200'
+        }`}>
+          {message.text}
+        </div>
+      )}
 
       {/* メンバー招待モーダル */}
       {showInviteModal && (
         <div className="fixed inset-0 bg-gray-600 dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border border-gray-200 dark:border-gray-600 w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
             <div className="mt-3">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">新しいメンバーを招待</h3>
-              <div className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">新しいメンバーを招待</h3>
+                <button
+                  onClick={() => setShowInviteModal(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  <span className="sr-only">閉じる</span>
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <form onSubmit={handleInviteMember} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">メールアドレス</label>
-                  <input type="email" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="user@example.com" />
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    メールアドレス <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={inviteForm.email}
+                    onChange={(e) => handleInviteFormChange('email', e.target.value)}
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    placeholder="user@example.com"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      姓 <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={inviteForm.last_name}
+                      onChange={(e) => handleInviteFormChange('last_name', e.target.value)}
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      placeholder="田中"
+                    />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">氏名</label>
-                  <input type="text" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="田中太郎" />
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      名 <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={inviteForm.first_name}
+                      onChange={(e) => handleInviteFormChange('first_name', e.target.value)}
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      placeholder="太郎"
+                    />
+                  </div>
                 </div>
+                
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">役職</label>
-                  <select className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
-                    {roles.map((role) => (
-                      <option key={role.id} value={role.id}>{role.name}</option>
-                    ))}
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    権限 <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={inviteForm.role}
+                    onChange={(e) => handleInviteFormChange('role', e.target.value)}
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="member">メンバー</option>
+                    <option value="manager">マネージャー</option>
+                    <option value="admin">管理者</option>
+                    <option value="viewer">閲覧者</option>
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">部署</label>
-                  <input type="text" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="セキュリティ部" />
-                </div>
-              </div>
+              </form>
+              
               <div className="flex justify-end space-x-3 mt-6">
-                <button onClick={() => setShowInviteModal(false)} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600">
+                <button
+                  onClick={() => setShowInviteModal(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
                   キャンセル
                 </button>
-                <button onClick={() => setShowInviteModal(false)} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700">
-                  招待を送信
+                <button
+                  onClick={handleInviteMember}
+                  disabled={isInviting || !inviteForm.email.trim() || !inviteForm.first_name.trim() || !inviteForm.last_name.trim()}
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {isInviting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      送信中...
+                    </>
+                  ) : (
+                    '招待を送信'
+                  )}
                 </button>
               </div>
             </div>
@@ -436,14 +598,17 @@ export default function Team() {
               
               <div className="space-y-4">
                 <div className="flex items-center">
-                  <div className="h-16 w-16 rounded-full bg-gray-500 text-white flex items-center justify-center text-xl font-medium">
-                    {selectedMember.avatar}
-                  </div>
+                  <img
+                    className="h-16 w-16 rounded-full object-cover"
+                    src={selectedMember.avatar_url || '/default-avatar.svg'}
+                    alt={`${selectedMember.first_name} ${selectedMember.last_name}`}
+                  />
                   <div className="ml-4">
-                    <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100">{selectedMember.name}</h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{selectedMember.department}</p>
+                    <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                      {selectedMember.first_name} {selectedMember.last_name}
+                    </h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{selectedMember.email}</p>
                     <div className="mt-1 flex items-center space-x-2">
-                      {getStatusBadge(selectedMember.status)}
                       {getRoleBadge(selectedMember.role)}
                     </div>
                   </div>
@@ -455,39 +620,38 @@ export default function Team() {
                     <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">{selectedMember.email}</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">電話番号</label>
-                    <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">{selectedMember.phone}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">入社日</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">参加日</label>
                     <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                      {new Date(selectedMember.joinDate).toLocaleDateString('ja-JP')}
+                      {new Date(selectedMember.created_at).toLocaleDateString('ja-JP')}
                     </p>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">最終ログイン</label>
-                    <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">{formatLastLogin(selectedMember.lastLogin)}</p>
-                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">参加プロジェクト</label>
-                  {selectedMember.projects.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {selectedMember.projects.map((project: string, index: number) => (
-                        <span key={index} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
-                          {project}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-gray-500 dark:text-gray-400">参加プロジェクトなし</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">最近のアクティビティ</label>
-                  <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">{selectedMember.recentActivity}</p>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">権限設定</label>
+                  <select
+                    defaultValue={selectedMember.role}
+                    onChange={async (e) => {
+                      const result = await updateMemberRole(selectedMember.id, e.target.value)
+                      if (result.success) {
+                        setMessage({ type: 'success', text: '権限が更新されました' })
+                        loadMembers() // メンバー一覧を更新
+                        setSelectedMember(null) // モーダルを閉じる
+                      } else {
+                        setMessage({ type: 'error', text: result.error || '権限の更新に失敗しました' })
+                      }
+                      setTimeout(() => setMessage(null), 3000)
+                    }}
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="admin">管理者</option>
+                    <option value="manager">マネージャー</option>
+                    <option value="member">メンバー</option>
+                    <option value="viewer">閲覧者</option>
+                  </select>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    権限を変更すると、即座にデータベースに反映されます。
+                  </p>
                 </div>
               </div>
 
@@ -495,10 +659,25 @@ export default function Team() {
                 <button onClick={() => setSelectedMember(null)} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600">
                   閉じる
                 </button>
-                <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700">
-                  編集
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* メールテンプレート設定モーダル */}
+      {showEmailTemplateModal && (
+        <div className="fixed inset-0 bg-gray-600 dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-10 mx-auto p-5 border border-gray-200 dark:border-gray-600 w-[800px] max-h-[90vh] shadow-lg rounded-md bg-white dark:bg-gray-800 overflow-y-auto">
+            <div className="mt-3">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">メールテンプレート設定</h3>
+                <button onClick={() => setShowEmailTemplateModal(false)} className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+                  <XCircleIcon className="h-6 w-6" />
                 </button>
               </div>
+              
+              <EmailTemplateSetup />
             </div>
           </div>
         </div>

@@ -1,31 +1,68 @@
 'use client'
 
-import Sidebar from '@/components/Sidebar'
-import Header from '@/components/Header'
-import Dashboard from '@/components/Dashboard'
-import { useSidebar } from '@/contexts/SidebarContext'
+import { useAuth } from '@/hooks/useAuth'
+import LandingPage from '@/components/LandingPage'
+import AuthenticatedLayout from '@/components/AuthenticatedLayout'
+import { useEffect, useState } from 'react'
 
 export default function Home() {
-  const { collapsed } = useSidebar()
+  const { isAuthenticated, loading, user } = useAuth()
+  const [isNewUserFlow, setIsNewUserFlow] = useState(false)
 
-  return (
-    <div className="h-screen flex">
-      {/* サイドバー */}
-      <div className={`hidden lg:flex lg:flex-col transition-all duration-300 ${
-        collapsed ? 'lg:w-16' : 'lg:w-64'
-      }`}>
-        <Sidebar />
-      </div>
+  // 新規ユーザーフローの状態を監視
+  useEffect(() => {
+    const checkNewUserFlow = () => {
+      const url = window.location.pathname
+      const searchParams = new URLSearchParams(window.location.search)
+      
+      // /authページにいる場合、または新規ユーザーフラグが設定されている場合
+      if (url === '/auth' || searchParams.get('newUser') === 'true') {
+        setIsNewUserFlow(true)
+      } else {
+        setIsNewUserFlow(false)
+      }
+    }
 
-      {/* メインコンテンツ */}
-      <div className="flex flex-1 flex-col min-w-0">
-        <Header />
-        <main className="flex-1 overflow-auto">
-          <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-6 py-4">
-            <Dashboard />
-          </div>
-        </main>
+    checkNewUserFlow()
+    window.addEventListener('popstate', checkNewUserFlow)
+    return () => window.removeEventListener('popstate', checkNewUserFlow)
+  }, [])
+
+  // 認証状態のデバッグ
+  useEffect(() => {
+    console.log('認証状態:', { isAuthenticated, loading, userId: user?.id, isNewUserFlow })
+    
+    // ログアウト後の処理
+    if (!isAuthenticated && !loading && !isNewUserFlow) {
+      console.log('未認証状態: ランディングページを表示')
+    }
+  }, [isAuthenticated, loading, user, isNewUserFlow])
+
+  // ローディング中の表示
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">読み込み中...</p>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
+
+  // 新規ユーザーフロー中は常にランディングページを表示
+  if (isNewUserFlow) {
+    console.log('新規ユーザーフロー中: ランディングページを表示')
+    return <LandingPage />
+  }
+
+  // 未認証の場合はランディングページを表示
+  if (!isAuthenticated) {
+    console.log('未認証: ランディングページを表示')
+    return <LandingPage />
+  }
+
+  // 認証済みの場合はダッシュボードを表示
+  console.log('認証済み: ダッシュボードを表示')
+  return <AuthenticatedLayout />
 } 

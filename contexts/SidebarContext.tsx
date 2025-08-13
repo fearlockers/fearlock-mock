@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import { getCookie, setTemporaryCookie } from '@/lib/cookies'
 
 interface SidebarContextType {
   collapsed: boolean
@@ -13,8 +14,8 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false)
 
   useEffect(() => {
-    // ローカルストレージからサイドバーの状態を読み込み
-    const savedCollapsed = localStorage.getItem('sidebarCollapsed')
+    // Cookieからサイドバーの状態を読み込み
+    const savedCollapsed = getCookie('sidebarCollapsed')
     if (savedCollapsed !== null) {
       setCollapsed(JSON.parse(savedCollapsed))
     }
@@ -22,7 +23,7 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
 
   const handleSetCollapsed = (newCollapsed: boolean) => {
     setCollapsed(newCollapsed)
-    localStorage.setItem('sidebarCollapsed', JSON.stringify(newCollapsed))
+    setTemporaryCookie('sidebarCollapsed', JSON.stringify(newCollapsed))
   }
 
   return (

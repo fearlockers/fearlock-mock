@@ -1,6 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useAuth } from '@/hooks/useAuth'
+import { useRouter } from 'next/navigation'
+import type { Project } from '@/lib/auth'
 import {
   FolderIcon,
   PlusIcon,
@@ -13,74 +16,18 @@ import {
   ClockIcon,
   MagnifyingGlassIcon,
   Cog6ToothIcon,
+  XCircleIcon,
+  GlobeAltIcon,
 } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 
-const sampleProjects = [
-  {
-    id: 1,
-    name: 'Webアプリケーション監査',
-    description: 'メインWebアプリケーションのセキュリティ監査プロジェクト',
-    status: 'active',
-    priority: 'high',
-    progress: 75,
-    created: '2024-01-10',
-    lastScan: '2024-01-15',
-    vulnerabilities: {
+// サンプルデータ（後で削除予定）
+const sampleVulnerabilities = {
       critical: 2,
       high: 8,
       medium: 15,
       low: 23,
-    },
-    members: [
-      { id: 1, name: '田中太郎', avatar: 'T', role: 'リーダー' },
-      { id: 2, name: '佐藤花子', avatar: 'S', role: 'アナリスト' },
-      { id: 3, name: '鈴木一郎', avatar: 'S', role: 'エンジニア' },
-    ],
-    tags: ['Web', 'Critical', 'OWASP'],
-  },
-  {
-    id: 2,
-    name: 'API セキュリティ検証',
-    description: 'REST API エンドポイントのセキュリティ検証',
-    status: 'planning',
-    priority: 'medium',
-    progress: 25,
-    created: '2024-01-12',
-    lastScan: null,
-    vulnerabilities: {
-      critical: 0,
-      high: 3,
-      medium: 7,
-      low: 12,
-    },
-    members: [
-      { id: 2, name: '佐藤花子', avatar: 'S', role: 'リーダー' },
-      { id: 4, name: '山田太郎', avatar: 'Y', role: 'アナリスト' },
-    ],
-    tags: ['API', 'REST', 'Auth'],
-  },
-  {
-    id: 3,
-    name: 'ネットワーク監視強化',
-    description: 'ネットワーク監視システムの強化プロジェクト',
-    status: 'completed',
-    priority: 'low',
-    progress: 100,
-    created: '2023-12-01',
-    lastScan: '2024-01-14',
-    vulnerabilities: {
-      critical: 0,
-      high: 0,
-      medium: 2,
-      low: 5,
-    },
-    members: [
-      { id: 3, name: '鈴木一郎', avatar: 'S', role: 'リーダー' },
-    ],
-    tags: ['Network', 'Monitoring'],
-  },
-]
+}
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -90,10 +37,93 @@ export default function Projects() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [projects, setProjects] = useState<Project[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  const [createForm, setCreateForm] = useState({
+    name: '',
+    description: '',
+    url: ''
+  })
+  const [isCreating, setIsCreating] = useState(false)
 
-  const filteredProjects = sampleProjects.filter(project => {
+  const { organization, getOrganizationProjects, createProject } = useAuth()
+  const router = useRouter()
+
+  // プロジェクト一覧を読み込み
+  const loadProjects = async () => {
+    if (!organization) return
+    
+    setIsLoading(true)
+    try {
+      const result = await getOrganizationProjects()
+      if (result.success && result.data) {
+        setProjects(result.data)
+      } else {
+        setMessage({ type: 'error', text: result.error || 'プロジェクトの取得に失敗しました' })
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'プロジェクトの取得に失敗しました' })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // 組織が変更されたときにプロジェクトを再読み込み
+  useEffect(() => {
+    loadProjects()
+  }, [organization])
+
+  // プロジェクト作成
+  const handleCreateProject = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!createForm.name.trim()) {
+      setMessage({ type: 'error', text: 'プロジェクト名を入力してください' })
+      return
+    }
+
+    setIsCreating(true)
+    try {
+      const result = await createProject({
+        name: createForm.name,
+        description: createForm.description,
+        url: createForm.url
+      })
+
+      if (result.success) {
+        setMessage({ type: 'success', text: 'プロジェクトが作成されました' })
+        setShowCreateModal(false)
+        setCreateForm({ name: '', description: '', url: '' })
+        loadProjects() // プロジェクト一覧を更新
+        
+        // 3秒後にメッセージを消す
+        setTimeout(() => {
+          setMessage(null)
+        }, 3000)
+      } else {
+        setMessage({ type: 'error', text: result.error || 'プロジェクトの作成に失敗しました' })
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'プロジェクトの作成に失敗しました' })
+    } finally {
+      setIsCreating(false)
+    }
+  }
+
+  const handleCreateFormChange = (field: string, value: string) => {
+    setCreateForm(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleProjectClick = (project: Project) => {
+    router.push(`/projects/${project.id}`)
+  }
+
+  const filteredProjects = projects.filter(project => {
     const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         project.description.toLowerCase().includes(searchTerm.toLowerCase())
+                         (project.description && project.description.toLowerCase().includes(searchTerm.toLowerCase()))
     const matchesStatus = statusFilter === 'all' || project.status === statusFilter
     return matchesSearch && matchesStatus
   })
@@ -107,45 +137,18 @@ export default function Projects() {
             アクティブ
           </span>
         )
-      case 'planning':
+      case 'inactive':
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300">
             <ClockIcon className="w-3 h-3 mr-1" />
-            計画中
+            非アクティブ
           </span>
         )
-      case 'completed':
+      case 'archived':
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
             <CheckCircleIcon className="w-3 h-3 mr-1" />
-            完了
-          </span>
-        )
-      default:
-        return null
-    }
-  }
-
-  const getPriorityBadge = (priority: string) => {
-    switch (priority) {
-      case 'high':
-        return (
-          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
-            <ExclamationTriangleIcon className="w-3 h-3 mr-1" />
-            高
-          </span>
-        )
-      case 'medium':
-        return (
-          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">
-            <ExclamationTriangleIcon className="w-3 h-3 mr-1" />
-            中
-          </span>
-        )
-      case 'low':
-        return (
-          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300">
-            低
+            アーカイブ
           </span>
         )
       default:
@@ -192,8 +195,8 @@ export default function Projects() {
               >
                 <option value="all">すべてのステータス</option>
                 <option value="active">アクティブ</option>
-                <option value="planning">計画中</option>
-                <option value="completed">完了</option>
+                <option value="inactive">非アクティブ</option>
+                <option value="archived">アーカイブ</option>
               </select>
             </div>
 
@@ -241,7 +244,7 @@ export default function Projects() {
                     総プロジェクト数
                   </dt>
                   <dd className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {sampleProjects.length}
+                    {projects.length}
                   </dd>
                 </dl>
               </div>
@@ -261,7 +264,7 @@ export default function Projects() {
                     アクティブ
                   </dt>
                   <dd className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {sampleProjects.filter(p => p.status === 'active').length}
+                    {projects.filter(p => p.status === 'active').length}
                   </dd>
                 </dl>
               </div>
@@ -281,7 +284,7 @@ export default function Projects() {
                     クリティカル脆弱性
                   </dt>
                   <dd className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {sampleProjects.reduce((sum, p) => sum + p.vulnerabilities.critical, 0)}
+                    {projects.length * sampleVulnerabilities.critical}
                   </dd>
                 </dl>
               </div>
@@ -301,7 +304,7 @@ export default function Projects() {
                     参加メンバー
                   </dt>
                   <dd className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {new Set(sampleProjects.flatMap(p => p.members.map(m => m.id))).size}
+                    {projects.length * 3}
                   </dd>
                 </dl>
               </div>
@@ -311,142 +314,132 @@ export default function Projects() {
       </div>
 
       {/* プロジェクト一覧 */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {isLoading ? (
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        </div>
+      ) : filteredProjects.length === 0 ? (
+        <div className="text-center py-12">
+          <FolderIcon className="mx-auto h-12 w-12 text-gray-400" />
+          <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">プロジェクトがありません</h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">新しいプロジェクトを作成してセキュリティ監査を開始しましょう。</p>
+          <div className="mt-6">
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              <PlusIcon className="w-4 h-4 mr-2" />
+              プロジェクトを作成
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    プロジェクト名
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    説明
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    URL
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    ステータス
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    脆弱性
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    作成日
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
         {filteredProjects.map((project) => (
-          <motion.div
+                  <motion.tr
             key={project.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
-            className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow"
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                    onClick={() => handleProjectClick(project)}
           >
-            <div className="p-6">
-              <div className="flex items-center justify-between">
+                    <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
-                  <FolderIcon className="h-6 w-6 text-gray-400" />
-                  <h3 className="ml-2 text-lg font-medium text-gray-900 dark:text-gray-100 truncate">
+                        <FolderIcon className="h-5 w-5 text-gray-400 mr-2" />
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {project.name}
-                  </h3>
-                </div>
-                <button className="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300">
-                  <EllipsisVerticalIcon className="h-5 w-5" />
-                </button>
-              </div>
-
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                {project.description}
-              </p>
-
-              <div className="mt-4 flex items-center justify-between">
-                {getStatusBadge(project.status)}
-                {getPriorityBadge(project.priority)}
-              </div>
-
-              {/* プログレスバー */}
-              <div className="mt-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">進捗</span>
-                  <span className="font-medium text-gray-900 dark:text-gray-100">{project.progress}%</span>
-                </div>
-                <div className="mt-1 w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-                  <div
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${project.progress}%` }}
-                  />
                 </div>
               </div>
-
-              {/* 脆弱性統計 */}
-              <div className="mt-4 grid grid-cols-4 gap-2 text-center">
-                <div>
-                  <div className="text-xs font-medium text-red-600 dark:text-red-400">{project.vulnerabilities.critical}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Critical</div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">
+                        {project.description || '説明なし'}
                 </div>
-                <div>
-                  <div className="text-xs font-medium text-orange-600 dark:text-orange-400">{project.vulnerabilities.high}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">High</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {project.url ? (
+                        <div className="flex items-center text-sm text-blue-600 dark:text-blue-400">
+                          <GlobeAltIcon className="w-4 h-4 mr-1" />
+                          <span className="truncate max-w-32">{project.url}</span>
                 </div>
-                <div>
-                  <div className="text-xs font-medium text-yellow-600 dark:text-yellow-400">{project.vulnerabilities.medium}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Medium</div>
+                      ) : (
+                        <span className="text-sm text-gray-400 dark:text-gray-500">-</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {getStatusBadge(project.status)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        {getTotalVulnerabilities(sampleVulnerabilities)}
                 </div>
-                <div>
-                  <div className="text-xs font-medium text-gray-600 dark:text-gray-400">{project.vulnerabilities.low}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Low</div>
-                </div>
-              </div>
-
-              {/* メンバー */}
-              <div className="mt-4">
-                <div className="flex -space-x-2 overflow-hidden">
-                  {project.members.slice(0, 3).map((member) => (
-                    <div
-                      key={member.id}
-                      className="inline-block h-6 w-6 rounded-full bg-gray-500 text-white text-xs flex items-center justify-center border-2 border-white dark:border-gray-800"
-                      title={member.name}
-                    >
-                      {member.avatar}
-                    </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {new Date(project.created_at).toLocaleDateString('ja-JP')}
+                    </td>
+                  </motion.tr>
                   ))}
-                  {project.members.length > 3 && (
-                    <div className="inline-block h-6 w-6 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300 text-xs flex items-center justify-center border-2 border-white dark:border-gray-800">
-                      +{project.members.length - 3}
-                    </div>
-                  )}
+              </tbody>
+            </table>
                 </div>
               </div>
-
-              {/* タグ */}
-              <div className="mt-4">
-                <div className="flex flex-wrap gap-1">
-                  {project.tags.slice(0, 3).map((tag, index) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* 最終スキャン日時 */}
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center">
-                    <CalendarIcon className="w-3 h-3 mr-1" />
-                    {project.lastScan ? 
-                      `最終スキャン: ${new Date(project.lastScan).toLocaleDateString('ja-JP')}` : 
-                      'スキャン未実行'
-                    }
-                  </div>
-                  <button className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
-                    <Cog6ToothIcon className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      )}
 
       {/* 新規プロジェクト作成モーダル */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-gray-600 dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border border-gray-200 dark:border-gray-600 w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
             <div className="mt-3">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                 新規プロジェクト作成
               </h3>
-              <div className="space-y-4">
+                <button
+                  onClick={() => setShowCreateModal(false)}
+                  className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+                >
+                  <XCircleIcon className="h-6 w-6" />
+                </button>
+              </div>
+              
+              <form onSubmit={handleCreateProject} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    プロジェクト名
+                    プロジェクト名 *
                   </label>
                   <input
                     type="text"
+                    value={createForm.name}
+                    onChange={(e) => handleCreateFormChange('name', e.target.value)}
                     className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="プロジェクト名を入力"
+                    required
                   />
                 </div>
                 <div>
@@ -455,21 +448,26 @@ export default function Projects() {
                   </label>
                   <textarea
                     rows={3}
+                    value={createForm.description}
+                    onChange={(e) => handleCreateFormChange('description', e.target.value)}
                     className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     placeholder="プロジェクトの説明を入力"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    優先度
+                    URL
                   </label>
-                  <select className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
-                    <option value="high">高</option>
-                    <option value="medium">中</option>
-                    <option value="low">低</option>
-                  </select>
+                  <input
+                    type="url"
+                    value={createForm.url}
+                    onChange={(e) => handleCreateFormChange('url', e.target.value)}
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    placeholder="https://example.com"
+                  />
                 </div>
-              </div>
+              </form>
+              
               <div className="flex justify-end space-x-3 mt-6">
                 <button
                   onClick={() => setShowCreateModal(false)}
@@ -478,12 +476,42 @@ export default function Projects() {
                   キャンセル
                 </button>
                 <button
-                  onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+                  onClick={handleCreateProject}
+                  disabled={isCreating || !createForm.name.trim()}
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  作成
+                  {isCreating ? (
+                    <div className="flex items-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      作成中...
+                    </div>
+                  ) : (
+                    '作成'
+                  )}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
+      {/* メッセージ表示 */}
+      {message && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <div className={`px-4 py-3 rounded-md shadow-lg ${
+            message.type === 'success' 
+              ? 'bg-green-500 text-white' 
+              : 'bg-red-500 text-white'
+          }`}>
+            <div className="flex items-center">
+              {message.type === 'success' ? (
+                <CheckCircleIcon className="h-5 w-5 mr-2" />
+              ) : (
+                <ExclamationTriangleIcon className="h-5 w-5 mr-2" />
+              )}
+              <span className="text-sm font-medium">{message.text}</span>
             </div>
           </div>
         </div>

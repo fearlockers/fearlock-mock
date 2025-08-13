@@ -37,3 +37,28 @@ a {
     color-scheme: dark;
   }
 } 
+
+/* スクロールバーを完全に非表示 */
+.custom-scrollbar {
+  /* Firefox */
+  scrollbar-width: none;
+  /* IE and Edge */
+  -ms-overflow-style: none;
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) */
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  display: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar-corner {
+  display: none;
+} 
