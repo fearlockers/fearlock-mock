@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "export": "next build && next export",
+    "export": "next build",
     "wrangler:dev": "wrangler dev",
     "wrangler:publish": "npm run build && wrangler deploy",
     "cf:deploy": "npm run build && wrangler deploy"
