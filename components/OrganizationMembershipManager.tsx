@@ -169,9 +169,9 @@ export default function OrganizationMembershipManager({ className = '' }: Organi
                       {org.description}
                     </p>
                   )}
-                  {org.industry && (
+                  {(org as any).industry && (
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      業界: {org.industry}
+                      業界: {(org as any).industry}
                     </p>
                   )}
                 </div>
