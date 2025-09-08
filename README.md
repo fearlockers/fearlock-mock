@@ -47,6 +47,8 @@ Fearlockは、脆弱性診断、ソースコード診断、ネットワーク診
 
 ## 🚀 セットアップ
 
+### ローカル開発
+
 1. **リポジトリのクローン**
 ```bash
 git clone <repository-url>
@@ -71,6 +73,32 @@ yarn dev
 ```
 http://localhost:3000
 ```
+
+### デプロイ
+
+#### GitHub Pages
+- `main` ブランチにプッシュすると自動的にGitHub Pagesにデプロイされます
+- デプロイ先: `https://fearlockers.github.io/fearlock-dev/`
+
+#### Vercel
+1. **Vercelアカウントでログイン**
+   - [Vercel](https://vercel.com)にアクセス
+   - GitHubアカウントでログイン
+
+2. **プロジェクトのインポート**
+   - 「New Project」をクリック
+   - `fearlockers/fearlock-dev` リポジトリを選択
+   - プロジェクト名: `fearlock-dev`
+
+3. **環境変数の設定**
+   - Vercelダッシュボードで環境変数を設定
+   - 必要な環境変数:
+     - `NEXT_PUBLIC_SUPABASE_URL`
+     - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+4. **デプロイ**
+   - 「Deploy」をクリック
+   - 自動的にデプロイが開始されます
 
 ## 📁 プロジェクト構造
 
