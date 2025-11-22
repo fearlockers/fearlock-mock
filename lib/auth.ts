@@ -938,7 +938,7 @@ export const getOrganizationProjects = async (organizationId: string): Promise<{
     }
 
     console.log('🔍 getOrganizationProjectsAPI: 成功, プロジェクト数:', data?.length || 0)
-    return { success: true, data: data || [] }
+    return { success: true, data: (data || []) as Project[] }
   } catch (error: any) {
     console.error('❌ getOrganizationProjectsAPI: 例外エラー:', error)
     return { success: false, error: `プロジェクトの取得に失敗しました: ${error.message || error}` }
@@ -975,7 +975,7 @@ export const createProject = async (projectData: {
       return { success: false, error: `プロジェクトの作成に失敗しました: ${error.message}` }
     }
 
-    return { success: true, data }
+    return { success: true, data: data as Project }
   } catch (error: any) {
     console.error('プロジェクト作成エラー:', error)
     return { success: false, error: `プロジェクトの作成に失敗しました: ${error.message || error}` }
@@ -1008,7 +1008,7 @@ export const updateProject = async (projectId: string, updateData: {
       return { success: false, error: `プロジェクトの更新に失敗しました: ${error.message}` }
     }
 
-    return { success: true, data }
+    return { success: true, data: data as Project }
   } catch (error: any) {
     console.error('プロジェクト更新エラー:', error)
     return { success: false, error: `プロジェクトの更新に失敗しました: ${error.message || error}` }
@@ -1054,7 +1054,7 @@ export const getProject = async (projectId: string): Promise<{
       return { success: false, error: `プロジェクトの取得に失敗しました: ${error.message}` }
     }
 
-    return { success: true, data }
+    return { success: true, data: data as Project }
   } catch (error: any) {
     console.error('プロジェクト取得エラー:', error)
     return { success: false, error: `プロジェクトの取得に失敗しました: ${error.message || error}` }
