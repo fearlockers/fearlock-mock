@@ -37,8 +37,8 @@ export interface Project {
   id: string
   organization_id: string
   name: string
-  description?: string
-  url?: string
+  description?: string | null
+  url?: string | null
   status: 'active' | 'inactive' | 'archived'
   created_by?: string
   created_at: string
