@@ -28,7 +28,7 @@ import { useSidebar } from '@/contexts/SidebarContext'
 import { useAuth } from '@/hooks/useAuth'
 
 const navigation = [
-  { name: 'ダッシュボード', icon: HomeIcon, href: '/' },
+  { name: 'ダッシュボード', icon: HomeIcon, href: '/dashboard' },
   { name: '脆弱性診断', icon: ShieldCheckIcon, href: '/vulnerability' },
   { name: 'ソースコード診断', icon: CodeBracketIcon, href: '/code-analysis' },
   { name: 'ネットワーク診断', icon: CpuChipIcon, href: '/network-scan' },

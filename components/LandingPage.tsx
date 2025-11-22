@@ -122,7 +122,8 @@ export default function LandingPage() {
   const router = useRouter()
 
   const handleGetStarted = () => {
-    router.push('/auth')
+    // モック用: 新規作成画面に遷移
+    router.push('/signup')
   }
 
   return (
@@ -139,7 +140,7 @@ export default function LandingPage() {
                 <span className="text-xl font-bold text-gray-900 dark:text-white">Fearlock</span>
               </div>
             </div>
-            <div className="hidden md:block">
+              <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
                 <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium">
                   機能
@@ -150,6 +151,12 @@ export default function LandingPage() {
                 <a href="#testimonials" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium">
                   お客様の声
                 </a>
+                <button
+                  onClick={() => router.push('/auth')}
+                  className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium"
+                >
+                  ログイン
+                </button>
                 <button
                   onClick={handleGetStarted}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
